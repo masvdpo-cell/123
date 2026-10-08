@@ -1,0 +1,2951 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#080d13">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Инвест">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
+<!-- Встроенный PWA Manifest (Data URL) -->
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%D0%98%D0%BD%D0%B2%D0%B5%D1%81%D1%82%20%C2%B7%20%D0%BF%D0%BE%D1%80%D1%82%D1%84%D0%B5%D0%BB%D1%8C%22%2C%22short_name%22%3A%22%D0%98%D0%BD%D0%B2%D0%B5%D1%81%D1%82%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23080d13%22%2C%22theme_color%22%3A%22%23080d13%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20512%20512%27%253E%253Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27128%27%20fill%3D%27%235fa8ff%27%2F%253E%253Ctext%20x%3D%2750%2525%27%20y%3D%2755%2525%27%20dominant-baseline%3D%27middle%27%20text-anchor%3D%27middle%27%20fill%3D%27white%27%20font-size%3D%27280%27%20font-family%3D%27sans-serif%27%20font-weight%3D%27bold%27%253E%25D2%25BD%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%235fa8ff'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='280' font-family='sans-serif' font-weight='bold'%3E₽%3C/text%3E%3C/svg%3E">
+<title>Инвест · портфель</title>
+<style>
+:root{
+  --bg:#080d13;--panel:#111923;--panel2:#182231;--panel3:#0d151f;
+  --line:#263548;--text:#f3f7fb;--muted:#8fa1b5;
+  --accent:#5fa8ff;--accent2:#8bc4ff;--good:#39cf86;--bad:#ff687c;--warn:#f3c45b;--violet:#9d8cff;
+  --radius:18px;--shadow:0 16px 45px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 12% -8%,rgba(70,125,190,.18),transparent 36%),
+    radial-gradient(circle at 92% 4%,rgba(105,80,190,.11),transparent 30%),
+    linear-gradient(145deg,#080d13,#0b121b 58%,#080d13);
+  color:var(--text);
+  font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  min-height:100vh;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{max-width:1500px;margin:auto;padding:20px}
+
+/* top */
+.top{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:center}
+.brandmark{
+  width:42px;height:42px;border-radius:14px;
+  background:linear-gradient(135deg,#5fa8ff,#8b7cff);
+  display:grid;place-items:center;font-weight:900;
+  box-shadow:0 8px 28px rgba(95,168,255,.25);
+}
+.brand h1{margin:0;font-size:22px;letter-spacing:-.3px}
+.brand small{color:var(--muted)}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);background:rgba(17,25,35,.9);color:var(--text);
+  padding:9px 12px;border-radius:11px;
+  transition:.18s transform,.18s background,.18s border,.18s opacity;
+}
+.btn:hover{background:var(--panel2);border-color:#38506d;transform:translateY(-1px)}
+.btn.primary{
+  border-color:#3979c9;background:linear-gradient(180deg,#1a3c68,#143056);
+  box-shadow:0 8px 24px rgba(35,100,170,.16);
+}
+.btn.danger{border-color:#63303a;background:#29151a}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* tabs */
+.tabs{
+  display:flex;gap:3px;overflow:auto;border:1px solid var(--line);
+  background:rgba(12,18,26,.72);padding:4px;border-radius:14px;
+  margin-bottom:14px;position:sticky;top:8px;z-index:5;backdrop-filter:blur(14px);
+  -webkit-overflow-scrolling:touch;
+}
+.tab{border:0;background:transparent;color:var(--muted);padding:10px 13px;border-radius:10px;white-space:nowrap}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.tab.active{color:#fff;background:#1a2d43;box-shadow:inset 0 0 0 1px #2e4967}
+
+/* cards / grid */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.card{
+  background:linear-gradient(180deg,rgba(18,26,37,.94),rgba(14,21,30,.94));
+  border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow);
+  transition:border-color .18s;
+}
+.card:hover{border-color:#30455d}
+.label{color:var(--muted);font-size:12px}
+.big{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:-.5px}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.muted{color:var(--muted)}
+.subtle{font-size:12px;color:var(--muted)}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+.input,.select,.textarea{
+  background:#0b121a;border:1px solid var(--line);border-radius:11px;color:var(--text);
+  padding:9px 10px;outline:none;
+}
+.input:focus,.select:focus,.textarea:focus{border-color:#4b82b8;box-shadow:0 0 0 3px rgba(95,168,255,.10)}
+.input{min-width:170px}.select{min-width:120px}
+.textarea{width:100%;min-height:72px;resize:vertical}
+
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:rgba(9,14,20,.45);-webkit-overflow-scrolling:touch}
+.table{width:100%;border-collapse:collapse;min-width:900px}
+.table th,.table td{padding:11px 12px;border-bottom:1px solid rgba(38,53,72,.72);text-align:left;white-space:nowrap}
+.table th{
+  font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;
+  background:#0d151f;position:sticky;top:0;z-index:1;
+}
+.table tr:hover td{background:rgba(95,168,255,.035)}
+.table tr:last-child td{border-bottom:0}
+
+.pill{
+  display:inline-block;border:1px solid var(--line);background:#101923;
+  border-radius:99px;padding:3px 8px;font-size:11px;
+}
+.two{display:grid;grid-template-columns:1.55fr 1fr;gap:12px}
+.section{margin-top:12px}
+
+/* chart */
+.chart-wrap{position:relative}
+.chart{height:320px;height:320px;width:100%;display:block;cursor:crosshair}
+.chart-tip{
+  position:absolute;pointer-events:none;display:none;
+  background:rgba(12,18,26,.95);border:1px solid #35506c;border-radius:10px;
+  padding:8px 11px;font-size:12px;box-shadow:var(--shadow);z-index:3;min-width:140px;
+}
+.legend{display:flex;gap:16px;color:var(--muted);font-size:12px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg-line{width:18px;height:3px;border-radius:2px;background:#5fa8ff}
+.lg-dash{width:18px;height:0;border-top:2px dashed rgba(145,160,178,.7)}
+.lg-div{width:18px;height:3px;border-radius:2px;background:#3dd68c}
+.lg-dep{width:18px;height:0;border-top:2px dashed #f0b429}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:18px;z-index:30;backdrop-filter:blur(5px)}
+.modalbox{
+  width:min(650px,100%);max-height:92vh;overflow:auto;background:#111923;
+  border:1px solid #304258;border-radius:20px;padding:19px;box-shadow:0 25px 80px rgba(0,0,0,.55);
+}
+.modalbox h3{margin:0 0 12px}
+.form{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:grid;gap:5px}
+.field label{font-size:12px;color:var(--muted)}
+.modalfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:15px;flex-wrap:wrap}
+.close{float:right;border:0;background:none;color:var(--muted);font-size:20px;line-height:1}
+
+.notice{
+  padding:11px 13px;border:1px solid #263c57;
+  background:linear-gradient(90deg,#0f1d2d,#101925);
+  border-radius:13px;color:#bfd0e4;margin-bottom:12px;
+  display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;
+}
+.empty{text-align:center;padding:34px;color:var(--muted)}
+
+/* allocation */
+.allocation{display:grid;gap:9px}
+.allocrow{display:grid;grid-template-columns:88px 1fr 62px 50px;align-items:center;gap:7px;font-size:13px}
+.bar{height:8px;border-radius:99px;background:#202a36;overflow:hidden;position:relative}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+.bar .tgt{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--warn);opacity:.9}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;margin-bottom:12px}
+.heroMain{
+  padding:20px;
+  background:linear-gradient(135deg,rgba(22,46,72,.96),rgba(17,25,35,.96));
+  border:1px solid #2c4a69;border-radius:20px;box-shadow:var(--shadow);
+}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#8db9e7}
+.heroValue{font-size:36px;font-weight:850;letter-spacing:-1.2px;margin:6px 0 10px}
+.heroMeta{display:flex;gap:8px;flex-wrap:wrap}
+.metric{padding:8px 11px;border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:11px}
+.metric b{display:block;font-size:15px;margin-top:2px}
+
+.miniGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.progress{height:10px;background:#202a36;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#8e7cff);border-radius:99px}
+.analyticsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rankrow{display:grid;grid-template-columns:90px 1fr 70px;gap:9px;align-items:center;margin:9px 0}
+.rankbar{height:8px;background:#202a36;border-radius:99px;overflow:hidden}
+.rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--violet))}
+.statusline{display:flex;justify-content:space-between;gap:10px;align-items:center}
+
+.spinner{
+  display:inline-block;width:13px;height:13px;border:2px solid var(--muted);
+  border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:-2px;margin-right:6px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.movers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mover-list{display:grid;gap:6px}
+.mover-item{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid transparent}
+.mover-item.up{border-color:rgba(57,207,134,.25)}
+.mover-item.down{border-color:rgba(255,104,124,.25)}
+
+.chk{display:flex;align-items:center;gap:8px}
+.chk input{width:15px;height:15px}
+
+@media(max-width:1100px){
+  .grid{grid-template-columns:1fr 1fr}
+  .hero,.two{grid-template-columns:1fr}
+  .analyticsGrid{grid-template-columns:1fr 1fr}
+  .movers{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .app{padding:10px}
+  .brand h1{font-size:18px}
+  .brandmark{width:36px;height:36px}
+  .actions{width:100%}
+  .actions .btn{flex:1;min-width:0;padding:9px 8px;font-size:13px}
+  .tabs{top:4px}
+  .grid,.miniGrid,.analyticsGrid{grid-template-columns:1fr 1fr}
+  .big{font-size:18px}
+  .heroValue{font-size:28px}
+  .row{grid-template-columns:1fr}
+  .allocrow{grid-template-columns:72px 1fr 54px 44px}
+  .table{min-width:780px}
+}
+
+/* ===== MOBILE APP SHELL ===== */
+html,body{height:100%;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+body{padding:0;padding-bottom:env(safe-area-inset-bottom,0)}
+.app{
+  max-width:920px;margin:0 auto;padding:12px 12px 88px;
+  min-height:100dvh;
+}
+.top{
+  position:sticky;top:0;z-index:20;
+  background:rgba(8,13,19,.92);backdrop-filter:blur(14px);
+  margin:0 -12px;padding:10px 12px calc(8px + env(safe-area-inset-top,0));
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;gap:8px;
+}
+.brand h1{font-size:16px;margin:0}
+.brand small{font-size:11px}
+.brandmark{width:36px;height:36px;font-size:16px}
+.actions{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.actions .btn{flex:1;min-width:0;padding:10px 8px;font-size:12px;justify-content:center}
+
+/* tabs: desktop top, mobile bottom */
+.tabs{
+  display:none; /* hidden on mobile — use bottom nav */
+}
+.bottom-nav{
+  display:flex;
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:rgba(12,18,26,.96);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom,0));
+  justify-content:space-around;gap:2px;
+  max-width:920px;margin:0 auto;
+}
+.bottom-nav button{
+  flex:1;background:transparent;border:0;color:var(--muted);
+  font:600 10px/1.15 system-ui,sans-serif;padding:6px 2px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;border-radius:12px;min-width:0;
+}
+.bottom-nav button .ico{font-size:18px;line-height:1}
+.bottom-nav button.active{color:var(--accent);background:rgba(95,168,255,.1)}
+.bottom-nav button:active{transform:scale(.96)}
+
+.btn,.select,.input{
+  min-height:44px;font-size:15px;border-radius:12px;
+}
+.btn{padding:10px 14px}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+.table{font-size:12px;min-width:520px}
+.table th,.table td{padding:10px 8px;white-space:nowrap}
+.hero{padding:16px;border-radius:16px}
+.heroValue{font-size:28px}
+.grid{grid-template-columns:1fr 1fr;gap:8px}
+.two{grid-template-columns:1fr;gap:12px}
+.chart{height:240px}
+.modal{align-items:flex-end;padding:0}
+.modalbox{
+  width:100%;max-width:100%;border-radius:20px 20px 0 0;
+  max-height:92dvh;overflow:auto;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom,0));
+}
+.modalfoot{position:sticky;bottom:0;background:var(--panel);padding-top:10px;gap:8px}
+.modalfoot .btn{flex:1;min-height:48px}
+.card{border-radius:16px;padding:14px}
+.stat{padding:12px}
+.stat .v{font-size:16px}
+.notice{font-size:12px;padding:8px 12px;margin:8px 0}
+
+/* more room on larger phones / tablets */
+@media (min-width:720px){
+  .app{padding:16px 16px 24px}
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;position:static}
+  .bottom-nav{display:none}
+  .actions{width:auto}
+  .actions .btn{flex:initial}
+  .two{grid-template-columns:1.2fr .8fr}
+  .grid{grid-template-columns:repeat(4,1fr)}
+  .modal{align-items:center;padding:18px}
+  .modalbox{max-width:480px;border-radius:18px;max-height:90vh}
+  .chart{height:300px}
+  .top{position:static;background:transparent;backdrop-filter:none;border:0;margin:0;padding:0}
+}
+
+/* install banner */
+.install-bar{
+  display:none;position:fixed;left:12px;right:12px;bottom:calc(64px + env(safe-area-inset-bottom,0));
+  z-index:35;background:var(--panel2);border:1px solid var(--line);border-radius:14px;
+  padding:12px 14px;box-shadow:var(--shadow);align-items:center;gap:10px;
+}
+.install-bar.show{display:flex}
+.install-bar p{margin:0;flex:1;font-size:13px;color:var(--muted)}
+.install-bar b{color:var(--text);display:block;margin-bottom:2px}
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="top">
+    <div class="brand">
+      <div class="brandmark">₽</div>
+      <div>
+        <h1>Инвест</h1>
+        <small>портфель · MOEX · офлайн</small>
+      </div>
+    </div>
+    <div class="actions" id="topActions">
+      <button type="button" class="btn" data-act="refresh" title="Обновить котировки MOEX">↻ Котировки</button>
+      <button type="button" class="btn" data-act="export">⇩ Бэкап</button>
+      <button type="button" class="btn" data-act="import">⇧ Загрузить</button>
+      <input id="fileInput" type="file" accept="application/json,.json,text/json,text/plain" hidden>
+    </div>
+  </div>
+
+  <div class="notice" id="notice">
+    <span id="noticeText">При открытии: котировки, день и точка графика обновляются автоматически</span>
+    <span class="muted" id="lastUpd"></span>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="dashboard">Обзор</button>
+    <button class="tab" data-tab="assets">Активы</button>
+    <button class="tab" data-tab="ops">Журнал</button>
+    <button class="tab" data-tab="divs">Дивиденды</button>
+    <button class="tab" data-tab="plan">План выплат</button>
+    <button class="tab" data-tab="fund">Фундаментал</button>
+    <button class="tab" data-tab="reserve">Резерв</button>
+    <button class="tab" data-tab="analytics">Аналитика</button>
+    <button class="tab" data-tab="system">Система</button>
+  </nav>
+
+  <main id="main"></main>
+</div>
+
+<nav class="bottom-nav" id="bottomNav" aria-label="Навигация">
+  <button type="button" data-tab="dashboard" class="active"><span class="ico">📊</span>Обзор</button>
+  <button type="button" data-tab="assets"><span class="ico">💼</span>Активы</button>
+  <button type="button" data-tab="ops"><span class="ico">📝</span>Журнал</button>
+  <button type="button" data-tab="divs"><span class="ico">💰</span>Дивы</button>
+  <button type="button" data-tab="plan"><span class="ico">📅</span>План</button>
+  <button type="button" data-tab="more"><span class="ico">⋯</span>Ещё</button>
+</nav>
+
+<div class="install-bar" id="installBar">
+  <p><b>Установить на телефон</b>Добавить на домашний экран</p>
+  <button type="button" class="btn primary" id="installBtn">Установить</button>
+  <button type="button" class="btn" id="installClose">✕</button>
+</div>
+
+
+<script>
+'use strict';
+
+// --- Автоматическая регистрация встроенного Service Worker (для работы PWA) ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    const swCode = `
+      self.addEventListener('install', (e) => self.skipWaiting());
+      self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+      self.addEventListener('fetch', (e) => {
+        // Офлайн фоллбэк при отсутствии сети
+        e.respondWith(
+          fetch(e.request).catch(() => caches.match(e.request))
+        );
+      });
+    `;
+    const blob = new Blob([swCode], { type: 'text/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(err => console.warn('SW registration failed:', err));
+  });
+}
+
+const KEY = 'vfinal45_terminal_v12';
+const PREV_KEYS = ['vfinal45_terminal_v4', 'vfinal45_terminal_v3', 'vfinal45_terminal_v2', 'vfinal45_terminal_v1', 'vfinal42_terminal_v4', 'vfinal42_terminal_v3', 'vfinal44_terminal_v1'];
+const clone = x => JSON.parse(JSON.stringify(x));
+
+/* ---- безопасное хранилище (localStorage может быть запрещён в превью) ---- */
+let memStore = null;
+let storageMode = 'memory'; // 'local' | 'memory'
+
+function canUseLocalStorage() {
+  try {
+    const k = '__t_test__';
+    window.localStorage.setItem(k, '1');
+    window.localStorage.removeItem(k);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function storageGet(key) {
+  if (storageMode === 'local') {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  return memStore && memStore.key === key ? memStore.value : null;
+}
+
+function storageSet(key, value) {
+  if (storageMode === 'local') {
+    try { window.localStorage.setItem(key, value); return true; } catch (e) { /* fallthrough */ }
+  }
+  memStore = { key, value };
+  storageMode = 'memory';
+  return false;
+}
+
+storageMode = canUseLocalStorage() ? 'local' : 'memory';
+
+function uid(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+
+
+const OFZ_MAP = {
+  '26239': 'SU26239RMFS2',
+  '26247': 'SU26247RMFS5',
+  '26246': 'SU26246RMFS7',
+  '26252': 'SU26252RMFS5',
+  '26250': 'SU26250RMFS9'
+};
+
+/* Справочник тикер ↔ название (автоподстановка) */
+const TICKER_DICT = {
+  SBER: { name: 'Сбербанк', type: 'Акция' },
+  SBERP: { name: 'Сбербанк-п', type: 'Акция' },
+  LKOH: { name: 'ЛУКОЙЛ', type: 'Акция' },
+  T: { name: 'Т-Технологии', type: 'Акция' },
+  YDEX: { name: 'Яндекс', type: 'Акция' },
+  TATN: { name: 'Татнефть', type: 'Акция' },
+  TATNP: { name: 'Татнефть а.п.', type: 'Акция' },
+  PHOR: { name: 'ФосАгро', type: 'Акция' },
+  GAZP: { name: 'Газпром', type: 'Акция' },
+  NVTK: { name: 'Новатэк', type: 'Акция' },
+  GMKN: { name: 'Норникель', type: 'Акция' },
+  ROSN: { name: 'Роснефть', type: 'Акция' },
+  MGNT: { name: 'Магнит', type: 'Акция' },
+  VTBR: { name: 'ВТБ', type: 'Акция' },
+  PLZL: { name: 'Полюс', type: 'Акция' },
+  ALRS: { name: 'АЛРОСА', type: 'Акция' },
+  MOEX: { name: 'Московская Биржа', type: 'Акция' },
+  CHMF: { name: 'Северсталь', type: 'Акция' },
+  NLMK: { name: 'НЛМК', type: 'Акция' },
+  MTSS: { name: 'МТС', type: 'Акция' },
+  RTKM: { name: 'Ростелеком', type: 'Акция' },
+  AFLT: { name: 'Аэрофлот', type: 'Акция' },
+  IRAO: { name: 'Интер РАО', type: 'Акция' },
+  HYDR: { name: 'РусГидро', type: 'Акция' },
+  FEES: { name: 'ФСК Россети', type: 'Акция' },
+  SNGS: { name: 'Сургутнефтегаз', type: 'Акция' },
+  SNGSP: { name: 'Сургутнефтегаз-п', type: 'Акция' },
+  TRNFP: { name: 'Транснефть-п', type: 'Акция' },
+  MAGN: { name: 'ММК', type: 'Акция' },
+  FIVE: { name: 'X5 Group', type: 'Акция' },
+  OZON: { name: 'Ozon', type: 'Акция' },
+  VKCO: { name: 'ВК', type: 'Акция' },
+  POSI: { name: 'Positive Technologies', type: 'Акция' },
+  LQDT: { name: 'Ликвидность', type: 'Фонд' },
+  SBMM: { name: 'SBMM (Сберегательный)', type: 'Фонд' },
+  TMOS: { name: 'Т-МосБиржа', type: 'Фонд' },
+  TMON: { name: 'Т-Денежный', type: 'Фонд' },
+  BCSD: { name: 'БКС Денежный', type: 'Фонд' },
+  '26239': { name: 'ОФЗ 26239', type: 'ОФЗ', secid: 'SU26239RMFS2' },
+  '26247': { name: 'ОФЗ 26247', type: 'ОФЗ', secid: 'SU26247RMFS5' },
+  '26246': { name: 'ОФЗ 26246', type: 'ОФЗ', secid: 'SU26246RMFS7' },
+  '26252': { name: 'ОФЗ 26252', type: 'ОФЗ', secid: 'SU26252RMFS5' },
+  '26250': { name: 'ОФЗ 26250', type: 'ОФЗ', secid: 'SU26250RMFS9' },
+  RU000A10DYC8: { name: 'ФПК 002Р-01', type: 'Корп. облигация' }
+};
+
+const NAME_TO_TICKER = {};
+Object.keys(TICKER_DICT).forEach(t => {
+  const n = TICKER_DICT[t].name.toLowerCase();
+  NAME_TO_TICKER[n] = t;
+  // короткие алиасы
+  n.split(/[\s\-—(]+/).filter(w => w.length > 2).forEach(w => {
+    if (!NAME_TO_TICKER[w]) NAME_TO_TICKER[w] = t;
+  });
+});
+NAME_TO_TICKER['сбер'] = 'SBER';
+NAME_TO_TICKER['сбербанк'] = 'SBER';
+NAME_TO_TICKER['лукойл'] = 'LKOH';
+NAME_TO_TICKER['яндекс'] = 'YDEX';
+NAME_TO_TICKER['татнефть'] = 'TATNP';
+NAME_TO_TICKER['фосагро'] = 'PHOR';
+NAME_TO_TICKER['тинькофф'] = 'T';
+NAME_TO_TICKER['т-банк'] = 'T';
+NAME_TO_TICKER['тбанк'] = 'T';
+
+/* Актуальные полученные дивиденды (скрин Т-Инвест) */
+const SEED_DIVIDENDS = [
+  { date: '2026-09-01', asset: 'SBER', type: 'Дивиденд', amount: 9869.64, note: 'получено' },
+  { date: '2026-09-01', asset: 'LKOH', type: 'Дивиденд', amount: 2420.00, note: 'получено' },
+  { date: '2026-09-01', asset: 'YDEX', type: 'Дивиденд', amount: 2105.00, note: 'получено' },
+  { date: '2026-09-01', asset: 'T', type: 'Дивиденд', amount: 1171.30, note: 'получено' },
+  { date: '2026-09-01', asset: 'TATNP', type: 'Дивиденд', amount: 444.84, note: 'получено' }
+];
+
+/* Снимок по Т-Инвест 06.10.2026 · avg из брокерского P&L */
+const seed = {
+  version: 10,
+  settings: {
+    monthly: 24000,
+    iis: 18000,
+    reserve: 6000,
+    lqdtTarget: 100000,
+    brokerAdjustment: 3.71,
+    baseAdjustment: 3.71,
+    brokerResult: -12591.73,
+    brokerResultPct: -2.33,
+    dayBaseValue: 574311.29,
+    dayBaseDate: '2026-10-06'
+  },
+  lastUpdate: null,
+  assets: [
+    {id:'SBER',ticker:'SBER',name:'Сбербанк',type:'Акция',contour:'ИИС',target:25,qty:341,avg:297.75,price:282.29,prevClose:281.7700,dayPnl:177.32,online:true,status:'🟢'},
+    {id:'LKOH',ticker:'LKOH',name:'ЛУКОЙЛ',type:'Акция',contour:'ИИС',target:25,qty:16,avg:5347.28,price:5576.5,prevClose:5547.0000,dayPnl:472.0,online:true,status:'🟢'},
+    {id:'T',ticker:'T',name:'Т-Технологии',type:'Акция',contour:'ИИС',target:15,qty:208,avg:299.10,price:270.82,prevClose:268.3800,dayPnl:507.52,online:true,status:'🟢'},
+    {id:'YDEX',ticker:'YDEX',name:'Яндекс',type:'Акция',contour:'ИИС',target:15,qty:13,avg:4209.13,price:3690.5,prevClose:3675.0000,dayPnl:201.5,online:true,status:'🟢'},
+    {id:'TATNP',ticker:'TATNP',name:'Татнефть а.п.',type:'Акция',contour:'ИИС',target:10,qty:64,avg:530.95,price:608.6,prevClose:608.8000,dayPnl:-12.8,online:true,status:'🟢'},
+    {id:'PHOR',ticker:'PHOR',name:'ФосАгро',type:'Акция',contour:'ИИС',target:10,qty:8,avg:6172.93,price:5200,prevClose:5224.0000,dayPnl:-192.0,online:true,status:'🟡'},
+    {id:'SBMM',ticker:'SBMM',name:'SBMM (Сберегательный)',type:'Фонд',contour:'ИИС',target:0,qty:1931,avg:18.785,price:19.55,prevClose:19.5420,dayPnl:15.45,online:true,status:'—'},
+    {id:'LQDT',ticker:'LQDT',name:'Ликвидность',type:'Фонд',contour:'Резерв',target:0,qty:48843,avg:2.0064,price:2.1024,prevClose:2.1016,dayPnl:39.07,online:true,status:'—'},
+    {id:'26247',ticker:'26247',secid:'SU26247RMFS5',name:'ОФЗ 26247',type:'ОФЗ',contour:'Резерв',target:0,qty:31,avg:878.83,price:835.96,prevClose:838.9200,dayPnl:-91.76,online:true,status:'—'},
+    {id:'26239',ticker:'26239',secid:'SU26239RMFS2',name:'ОФЗ 26239',type:'ОФЗ',contour:'Резерв',target:0,qty:31,avg:749.99,price:745.47,prevClose:745.8500,dayPnl:-11.78,online:true,status:'—'},
+    {id:'26246',ticker:'26246',secid:'SU26246RMFS7',name:'ОФЗ 26246',type:'ОФЗ',contour:'Резерв',target:0,qty:6,avg:827.21,price:807.54,prevClose:807.8700,dayPnl:-1.98,online:true,status:'—'},
+    {id:'26252',ticker:'26252',secid:'SU26252RMFS5',name:'ОФЗ 26252',type:'ОФЗ',contour:'Резерв',target:0,qty:5,avg:919.76,price:913.02,prevClose:917.1900,dayPnl:-20.85,online:true,status:'—'},
+    {id:'26250',ticker:'26250',secid:'SU26250RMFS9',name:'ОФЗ 26250',type:'ОФЗ',contour:'Резерв',target:0,qty:5,avg:836.55,price:826.62,prevClose:827.7300,dayPnl:-5.55,online:true,status:'—'},
+    {id:'FPK',ticker:'RU000A10DYC8',name:'ФПК 002Р-01',type:'Корп. облигация',contour:'Резерв',target:0,qty:2,avg:1013.11,price:1012.29,prevClose:1013.1700,dayPnl:-1.76,online:false,status:'—'}
+  ],
+  ops: [],
+  dividends: SEED_DIVIDENDS.map((d, i) => Object.assign({ id: 'seed_d' + i, seed: true, cashApplied: false }, d)),
+  history: [
+    /* value=капитал, deposits=накопл. пополнения, dividends=накопл. дивы */
+    {date:'2026-04-01',value:240000,invested:240000,deposits:240000,dividends:0},
+    {date:'2026-05-01',value:272000,invested:264000,deposits:264000,dividends:0},
+    {date:'2026-06-01',value:318000,invested:288000,deposits:288000,dividends:0},
+    {date:'2026-07-01',value:374000,invested:312000,deposits:312000,dividends:0},
+    {date:'2026-08-01',value:445000,invested:336000,deposits:336000,dividends:0},
+    {date:'2026-10-06',value:575392.71,invested:588051.74,deposits:588051.74,dividends:16010.78}
+  ],
+  fund: [
+    {ticker:'SBER',status:'🟢',yellow:0,orange:0,red:0,trend:'→',note:'Тезис сохранён'},
+    {ticker:'LKOH',status:'🟢',yellow:0,orange:0,red:0,trend:'→',note:'Просадка из‑за фиксаций и неопределённости по дивидендам'},
+    {ticker:'T',status:'🟢',yellow:0,orange:0,red:0,trend:'↑',note:'Рост после утверждения дивидендов'},
+    {ticker:'YDEX',status:'🟢',yellow:0,orange:0,red:0,trend:'→',note:'Тезис сохранён'},
+    {ticker:'TATNP',status:'🟢',yellow:0,orange:0,red:0,trend:'→',note:'Тезис сохранён'},
+    {ticker:'PHOR',status:'🟡',yellow:1,orange:0,red:0,trend:'↓',note:'Слабые результаты полугодия, рост затрат'}
+  ],
+  /* Только утверждённые дивиденды и купоны (status: approved) */
+  planned: [
+    /* Только ещё НЕ полученные утверждённые выплаты (будущие даты) */
+    {id:'p_26247_1',ticker:'26247',type:'Купон',amount:450,payDate:'2026-12-15',status:'approved',note:'Купон ОФЗ 26247'},
+    {id:'p_26239_1',ticker:'26239',type:'Купон',amount:420,payDate:'2026-12-15',status:'approved',note:'Купон ОФЗ 26239'},
+    {id:'p_26246_1',ticker:'26246',type:'Купон',amount:95,payDate:'2026-12-15',status:'approved',note:'Купон ОФЗ 26246'},
+    {id:'p_26252_1',ticker:'26252',type:'Купон',amount:90,payDate:'2026-11-20',status:'approved',note:'Купон ОФЗ 26252'},
+    {id:'p_26250_1',ticker:'26250',type:'Купон',amount:85,payDate:'2026-12-10',status:'approved',note:'Купон ОФЗ 26250'},
+    {id:'p_fpk_1',ticker:'RU000A10DYC8',type:'Купон',amount:40,payDate:'2026-11-01',status:'approved',note:'Купон ФПК'}
+  ]
+};
+
+
+
+let db = load();
+let tab = 'dashboard';
+let filter = { q: '', contour: 'Все', type: 'Все' };
+let refreshing = false;
+
+function load() {
+  try {
+    const raw = storageGet(KEY);
+    if (raw) {
+      const x = JSON.parse(raw);
+      if (x && x.assets) { migrate(x); return x; }
+    }
+  } catch (e) {}
+  for (const k of PREV_KEYS) {
+    try {
+      const raw = storageGet(k);
+      if (!raw) continue;
+      const x = JSON.parse(raw);
+      if (x && x.assets) {
+        migrate(x);
+        storageSet(KEY, JSON.stringify(x));
+        return x;
+      }
+    } catch (e) {}
+  }
+  return clone(seed);
+}
+
+function migrate(x) {
+  x.settings = x.settings || {};
+  x.history = Array.isArray(x.history) ? x.history : [];
+  x.ops = Array.isArray(x.ops) ? x.ops : [];
+  x.dividends = Array.isArray(x.dividends) ? x.dividends : [];
+  x.fund = Array.isArray(x.fund) ? x.fund : [];
+  x.planned = Array.isArray(x.planned) ? x.planned : [];
+  (x.dividends || []).forEach((d, i) => { if (!d.id) d.id = 'd' + i + '_' + (d.date || '') + '_' + (d.asset || ''); });
+  (x.ops || []).forEach((o, i) => { if (!o.id) o.id = 'o' + i + '_' + (o.date || '') + '_' + i; });
+  x.assets = Array.isArray(x.assets) ? x.assets : [];
+  if (!Number.isFinite(x.settings.dayBaseValue)) x.settings.dayBaseValue = totalOf(x);
+  if (!x.settings.dayBaseDate) x.settings.dayBaseDate = new Date().toISOString().slice(0, 10);
+  if (typeof x.settings.brokerAdjustment !== 'number') x.settings.brokerAdjustment = 0;
+  if (typeof x.settings.baseAdjustment !== 'number') {
+    x.settings.baseAdjustment = Number.isFinite(x.settings.brokerAdjustment) ? x.settings.brokerAdjustment : 3.71;
+  }
+  (x.dividends || []).forEach(d => {
+    if (d.seed == null && String(d.id || '').startsWith('seed_')) { d.seed = true; d.cashApplied = false; }
+  });
+  (x.assets || []).forEach(a => {
+    if (a.type === 'ОФЗ' && !a.secid) a.secid = OFZ_MAP[a.ticker] || a.ticker;
+  });
+  if (!x.history.length) {
+    x.history.push({ date: '2026-04-01', value: 240000, invested: 240000 });
+  } else if (x.history[0] && Number(x.history[0].value) !== 240000 && x.history[0].date <= '2026-04-01') {
+    x.history[0].value = 240000;
+    x.history[0].invested = x.history[0].invested || 240000;
+  }
+  // дивиденды со скрина Т-Инвест: восстановить, если пусто или неполный набор
+  const needDivs = !x.dividends.length
+    || x.dividends.length < SEED_DIVIDENDS.length
+    || Math.abs(x.dividends.reduce((s, d) => s + (Number(d.amount) || 0), 0) - 16010.78) > 50;
+  if (needDivs && x.dividends.length <= SEED_DIVIDENDS.length + 2) {
+    // сохранить пользовательские сверх seed
+    const seedAssets = new Set(SEED_DIVIDENDS.map(d => d.asset));
+    const extra = x.dividends.filter(d => !seedAssets.has(d.asset) || !SEED_DIVIDENDS.some(s => s.asset === d.asset && Math.abs(s.amount - d.amount) < 0.01));
+    x.dividends = clone(SEED_DIVIDENDS).concat(extra);
+  }
+  if (!Array.isArray(x.planned)) {
+    x.planned = clone(seed.planned || []);
+  }
+  // убрать из плана уже прошедшие (должны быть только в дивидендах)
+  const today = new Date().toISOString().slice(0, 10);
+  x.planned = x.planned.filter(p => {
+    const d = p.payDate || p.nextDate || '';
+    return !d || d >= today;
+  });
+  if (!x.version || x.version < 6) x.version = 6;
+}
+
+function totalOf(d) {
+  return (d.assets || []).reduce((s, a) => s + (a.qty || 0) * (a.price || 0), 0) + (d.settings?.brokerAdjustment || 0);
+}
+
+function save() {
+  try {
+    storageSet(KEY, JSON.stringify(db));
+  } catch (e) {
+    console.warn('save failed', e);
+  }
+}
+
+function fmt(x) {
+  return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(Math.round(x || 0)) + ' ₽';
+}
+function nfmt(x, d = 2) {
+  return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: d }).format(x || 0);
+}
+function pf(x) { return nfmt(x) + '%'; }
+function signed(x, formatFn) {
+  const v = formatFn(x);
+  return (x > 0 ? '+' : '') + v;
+}
+
+function assetValue(a) { return (Number(a.qty) || 0) * (Number(a.price) || 0); }
+function assetInvested(a) { return (Number(a.qty) || 0) * (Number(a.avg) || 0); }
+/** P&L позиции = (цена − средняя) × qty */
+function assetPnl(a) {
+  const q = Number(a.qty) || 0;
+  return q * ((Number(a.price) || 0) - (Number(a.avg) || 0));
+}
+
+function total() {
+  return db.assets.reduce((s, a) => s + assetValue(a), 0) + (Number(db.settings && db.settings.brokerAdjustment) || 0);
+}
+function invested() {
+  return db.assets.reduce((s, a) => s + assetInvested(a), 0);
+}
+function divTotal() {
+  return (db.dividends || []).reduce((s, x) => s + (Number(x.amount) || 0), 0);
+}
+/** P&L всех позиций — без кэша и пополнений */
+function positionsPnl() {
+  return db.assets.filter(a => !a.archived).reduce((s, a) => s + assetPnl(a), 0);
+}
+/** Пополнения − выводы из журнала */
+function netDeposits() {
+  return (db.ops || []).reduce((s, o) => {
+    if (o.type === 'Пополнение') return s + (Number(o.amount) || 0);
+    if (o.type === 'Вывод') return s - (Number(o.amount) || 0);
+    return s;
+  }, 0);
+}
+/** Рост капитала от первой точки истории: ₽ и % */
+function growthFromFirst() {
+  const rows = db.history || [];
+  if (!rows.length) return { abs: 0, pct: 0, first: 0, date: '—' };
+  const first = Number(rows[0].value) || 0;
+  const abs = total() - first;
+  const pct = first ? (abs / first * 100) : 0;
+  return { abs, pct, first, date: rows[0].date || '—' };
+}
+
+function pnl() {
+  // P&L позиций = Σ (price − avg) × qty  — пополнения НЕ входят
+  if (db.settings && db.settings.useBrokerResult && Number.isFinite(db.settings.brokerResult)) {
+    return db.settings.brokerResult;
+  }
+  return positionsPnl();
+}
+function pnlPct() {
+  const inv = invested();
+  if (db.settings && db.settings.useBrokerResult && Number.isFinite(db.settings.brokerResultPct)) {
+    return db.settings.brokerResultPct;
+  }
+  return inv ? pnl() / inv * 100 : 0;
+}
+
+/** Прибыль = P&L позиций + полученные дивиденды/купоны */
+function profitWithDivs() {
+  return positionsPnl() + divTotal();
+}
+function profitWithDivsPct() {
+  const inv = invested();
+  return inv ? profitWithDivs() / inv * 100 : 0;
+}
+function valueWithDivs() {
+  return total() + divTotal();
+}
+
+function ensureDayBase() {
+  if (!db.settings) db.settings = {};
+  const today = new Date().toISOString().slice(0, 10);
+  if (db.settings.dayBaseDate !== today) {
+    db.settings.dayBaseValue = total();
+    db.settings.dayBaseDate = today;
+    save();
+  }
+}
+
+/**
+ * Дневное P&L позиции.
+ * Акции: (цена − prev) × qty  или  CHANGE × qty (CHANGE в ₽).
+ * Облигации: цена в ₽ = % от номинала × 10 (ном. 1000).
+ *   CHANGE по ОФЗ — в процентных пунктах → Δ₽ = CHANGE × 10 × qty.
+ */
+function assetDayPnl(a) {
+  const q = a.qty || 0;
+  if (!q) return 0;
+  // приоритет: явное дневное изменение с биржи
+  if (a.dayPnl != null && Number.isFinite(a.dayPnl)) return a.dayPnl;
+  if (isBond(a)) {
+    // CHANGE в п.п. номинала
+    if (a.marketChange != null && Number.isFinite(a.marketChange) && a.marketChange !== 0) {
+      const nom = a.nominal || 1000;
+      return a.marketChange / 100 * nom * q;
+    }
+  } else {
+    if (a.marketChange != null && Number.isFinite(a.marketChange) && a.marketChange !== 0) {
+      return a.marketChange * q;
+    }
+  }
+  const prev = (a.prevClose > 0) ? a.prevClose : (a.prevPrice > 0 ? a.prevPrice : null);
+  if (prev == null) return 0;
+  return ((a.price || 0) - prev) * q;
+}
+/** Портфельное дневное: сумма по активам с prevClose; fallback — база дня */
+function dayChange() {
+  ensureDayBase();
+  const fromQuotes = db.assets
+    .filter(a => !a.archived && ((a.prevClose > 0) || (a.prevPrice > 0)))
+    .reduce((s, a) => s + assetDayPnl(a), 0);
+  const hasQuotes = db.assets.some(a => !a.archived && ((a.prevClose > 0) || (a.prevPrice > 0)));
+  if (hasQuotes) return fromQuotes;
+  const base = Number(db.settings.dayBaseValue) || 0;
+  const today = new Date().toISOString().slice(0, 10);
+  const cash = (db.ops || [])
+    .filter(o => o.date === today && (o.type === 'Пополнение' || o.type === 'Вывод'))
+    .reduce((s, o) => s + (o.type === 'Пополнение' ? 1 : -1) * (Number(o.amount) || 0), 0);
+  return total() - base - cash;
+}
+function dayChangePct() {
+  if (!db.settings) return 0;
+  const hasQuotes = db.assets.some(a => !a.archived && ((a.prevClose > 0) || (a.prevPrice > 0)));
+  if (hasQuotes) {
+    const prevTot = db.assets.filter(a => !a.archived).reduce((s, a) => {
+      const prev = a.prevClose > 0 ? a.prevClose : (a.prevPrice > 0 ? a.prevPrice : a.price);
+      return s + (a.qty || 0) * (prev || 0);
+    }, 0);
+    return prevTot ? dayChange() / prevTot * 100 : 0;
+  }
+  const base = Number(db.settings.dayBaseValue) || 0;
+  return base ? dayChange() / base * 100 : 0;
+}
+/** Парсинг числа: 1 234,56 или 1234.56 */
+function parseNum(v) {
+  if (typeof v === 'number') return v;
+  const s = String(v ?? '').trim().replace(/\s/g, '').replace(',', '.');
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function contour(c) {
+  return db.assets.filter(a => a.contour === c && !a.archived).reduce((s, a) => s + assetValue(a), 0);
+}
+function el(id) { return document.getElementById(id); }
+function htmlEscape(s) {
+  return String(s ?? '').replace(/[&<>"']/g, m =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+}
+function stat(label, val, cls = '') {
+  return `<div class="card"><div class="label">${label}</div><div class="big ${cls}">${val}</div></div>`;
+}
+
+function setNotice(text) {
+  el('noticeText').textContent = text;
+}
+function updateLastUpd() {
+  const t = el('lastUpd');
+  if (!t) return;
+  t.textContent = db.lastUpdate
+    ? 'MOEX: ' + new Date(db.lastUpdate).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+    : '';
+}
+
+function render() {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === tab));
+  const mainTabs = ['dashboard','assets','ops','divs','plan'];
+  document.querySelectorAll('#bottomNav [data-tab]').forEach(x => {
+    const t = x.dataset.tab;
+    const on = t === tab || (t === 'more' && !mainTabs.includes(tab));
+    x.classList.toggle('active', on);
+  });
+  const map = { dashboard, assets, ops, divs, plan, fund, reserve, analytics, system };
+  (map[tab] || dashboard)();
+  updateLastUpd();
+  try { history.replaceState(null, '', '#' + tab); } catch (e) {}
+}
+
+function showMoreMenu() {
+  const m = document.createElement('div');
+  m.className = 'modal';
+  m.innerHTML = `<div class="modalbox">
+    <button class="close" data-x>×</button>
+    <h3>Ещё</h3>
+    <div class="form" style="gap:8px">
+      <button type="button" class="btn" data-go="fund" style="width:100%;justify-content:flex-start">📈 Фундаментал</button>
+      <button type="button" class="btn" data-go="reserve" style="width:100%;justify-content:flex-start">🛡️ Резерв</button>
+      <button type="button" class="btn" data-go="analytics" style="width:100%;justify-content:flex-start">📉 Аналитика</button>
+      <button type="button" class="btn" data-go="system" style="width:100%;justify-content:flex-start">⚙️ Система</button>
+      <button type="button" class="btn" data-act="refresh" style="width:100%;justify-content:flex-start">↻ Обновить котировки</button>
+      <button type="button" class="btn" data-act="export" style="width:100%;justify-content:flex-start">⇩ Бэкап</button>
+      <button type="button" class="btn" data-act="import" style="width:100%;justify-content:flex-start">⇧ Загрузить</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+  const close = () => m.remove();
+  m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+  m.querySelectorAll('[data-go]').forEach(b => {
+    b.onclick = () => { tab = b.getAttribute('data-go'); close(); render(); };
+  });
+  m.querySelectorAll('[data-act]').forEach(b => {
+    b.onclick = (e) => {
+      const act = b.getAttribute('data-act');
+      close();
+      if (act === 'refresh') refresh();
+      else if (act === 'export') doExport();
+      else if (act === 'import') doImportPick();
+    };
+  });
+  m.addEventListener('click', e => { if (e.target === m) close(); });
+}
+
+
+/* ========== DASHBOARD ========== */
+function dashboard() {
+  ensureDayBase();
+  const t = total();
+  const rv = contour('Резерв');
+  const lqdt = assetValue(db.assets.find(a => a.ticker === 'LQDT') || {});
+  const gap = Math.max(0, (db.settings.lqdtTarget || 100000) - lqdt);
+  const peak = Math.max(...(db.history || []).map(x => x.value), t);
+  const dd = peak ? ((t / peak - 1) * 100) : 0;
+  const top = db.assets.filter(a => assetValue(a) > 0).sort((a, b) => assetValue(b) - assetValue(a))[0];
+  const day = dayChange();
+  const dayP = dayChangePct();
+  const p = pnl();
+  const pp = pnlPct();
+  const pw = profitWithDivs();
+  const pwp = profitWithDivsPct();
+  const g = growthFromFirst();
+
+  // winners / losers by position P&L
+  const ranked = db.assets
+    .filter(a => assetValue(a) > 0 && a.type === 'Акция')
+    .map(a => ({ a, pnl: assetPnl(a), pct: assetInvested(a) ? assetPnl(a) / assetInvested(a) * 100 : 0 }))
+    .sort((x, y) => y.pnl - x.pnl);
+  const winners = ranked.filter(x => x.pnl > 0).slice(0, 3);
+  const losers = ranked.filter(x => x.pnl < 0).slice(-3).reverse();
+
+  el('main').innerHTML = `
+  <div class="hero">
+    <div class="heroMain">
+      <div class="eyebrow">Портфель · сегодня</div>
+      <div class="heroValue">${fmt(t)}</div>
+      <div class="heroMeta">
+        <div class="metric">Прибыль (P&amp;L + дивы) <b class="${pw < 0 ? 'bad' : 'good'}">${signed(pw, fmt)} · ${signed(pwp, pf)}</b></div>
+        <div class="metric">P&amp;L позиций <b class="${p < 0 ? 'bad' : 'good'}">${signed(p, fmt)} · ${signed(pp, pf)}</b></div>
+        <div class="metric">За день <b class="${day < 0 ? 'bad' : (day > 0 ? 'good' : '')}">${signed(day, fmt)} · ${signed(dayP, pf)}</b></div>
+        <div class="metric">Дивиденды получено <b class="good">${fmt(divTotal())}</b></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="statusline">
+        <div><b>Состояние</b><div class="subtle">Котировки · аналитика · резерв</div></div>
+        <span class="pill">v4.5</span>
+      </div>
+      <div style="margin-top:14px">
+        <div class="statusline"><span>Резерв</span><b>${fmt(rv)}</b></div>
+        <div class="progress" style="margin-top:7px">
+          <i style="width:${Math.min(100, rv / (db.settings.lqdtTarget || 100000) * 100)}%"></i>
+        </div>
+        <div class="subtle" style="margin-top:6px">
+          ${gap ? `До цели ликвидности ещё ${fmt(gap)}` : 'Цель ликвидности достигнута'}
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="statusline"><span>Крупнейшая позиция</span>
+          <b>${top ? top.ticker : '—'} ${top ? pf(assetValue(top) / t * 100) : ''}</b>
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <div class="statusline"><span>ИИС / Резерв</span>
+          <b>${pf(t ? contour('ИИС') / t * 100 : 0)} / ${pf(t ? rv / t * 100 : 0)}</b>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    ${stat('Капитал', fmt(t))}
+    ${stat('Результат всего', `${signed(p, fmt)} · ${signed(pp, pf)}`, p < 0 ? 'bad' : 'good')}
+    ${stat('Изменение за день', `${signed(day, fmt)} · ${signed(dayP, pf)}`, day < 0 ? 'bad' : (day > 0 ? 'good' : 'muted'))}
+    ${stat('Рост от 1-й точки', `${signed(g.abs, fmt)} · ${signed(g.pct, pf)}`, g.abs < 0 ? 'bad' : 'good')}
+  </div>
+  <div class="grid" style="margin-top:11px">
+    ${stat('ИИС', fmt(contour('ИИС')))}
+    ${stat('Резерв', fmt(rv))}
+    ${stat('Дивиденды/купоны', fmt(divTotal()), 'good')}
+    ${stat('Активов', db.assets.filter(a => !a.archived && assetValue(a) > 0).length)}
+  </div>
+
+  <div class="two section">
+    <div class="card">
+      <div class="top" style="margin-bottom:4px">
+        <div>
+          <h3 style="margin:0">Рост капитала</h3>
+          <span class="muted">Синий — капитал (цены) · зелёный — дивиденды (правая ось)</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <select class="select" id="chartRange" title="Сколько точек показать">
+            <option value="all">Все точки</option>
+            <option value="3">3 точки</option>
+            <option value="6">6 точек</option>
+            <option value="12">12 точек</option>
+          </select>
+          <select class="select" id="chartScale" title="Масштаб оси Y">
+            <option value="fit">По данным</option>
+            <option value="zero">От нуля</option>
+            <option value="tight">Плотно</option>
+          </select>
+          <label class="chk" style="margin:0;white-space:nowrap;font-size:12px;color:var(--muted)">
+            <input type="checkbox" id="chartArea" checked> дивиденды
+          </label>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="canvas" class="chart"></canvas>
+        <div class="chart-tip" id="chartTip"></div>
+      </div>
+      <div class="legend">
+        <span><i class="lg-line"></i> капитал (цены)</span>
+        <span><i class="lg-div"></i> дивиденды</span>
+        <span class="muted" id="chartMeta"></span>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 2px">Распределение</h3>
+      <div class="subtle" style="margin-bottom:10px">факт · жёлтая черта — цель %</div>
+      <div class="allocation">${allocation()}</div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h3 style="margin:0 0 10px">Лидеры и аутсайдеры (акции, P&amp;L позиции)</h3>
+    <div class="movers">
+      <div>
+        <div class="subtle" style="margin-bottom:6px">В плюсе</div>
+        <div class="mover-list">
+          ${winners.length ? winners.map(x => `
+            <div class="mover-item up">
+              <span><b>${x.a.ticker}</b></span>
+              <span class="good">${signed(x.pnl, fmt)} · ${signed(x.pct, pf)}</span>
+            </div>`).join('') : '<div class="subtle">Нет позиций в плюсе</div>'}
+        </div>
+      </div>
+      <div>
+        <div class="subtle" style="margin-bottom:6px">В минусе</div>
+        <div class="mover-list">
+          ${losers.length ? losers.map(x => `
+            <div class="mover-item down">
+              <span><b>${x.a.ticker}</b></span>
+              <span class="bad">${signed(x.pnl, fmt)} · ${signed(x.pct, pf)}</span>
+            </div>`).join('') : '<div class="subtle">Нет позиций в минусе</div>'}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <div class="top" style="margin-bottom:0">
+      <div>
+        <h3 style="margin:0">Быстрые действия</h3>
+        <span class="muted">Без лишних переходов</span>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button type="button" class="btn primary" data-act="addOp">＋ Операция</button>
+      <button type="button" class="btn" data-act="addAsset">＋ Актив</button>
+      <button type="button" class="btn" data-act="goAnalytics">▦ Аналитика</button>
+      <button type="button" class="btn" data-act="refresh">↻ Котировки</button>
+    </div>
+  </div>`;
+
+  drawChart();
+  ['chartRange', 'chartScale', 'chartArea'].forEach(id => {
+    const n = el(id);
+    if (n) n.onchange = drawChart;
+  });
+}
+
+function allocation() {
+  const t = total();
+  return db.assets
+    .filter(a => assetValue(a) > 0)
+    .sort((a, b) => assetValue(b) - assetValue(a))
+    .map(a => {
+      const s = t ? assetValue(a) / t * 100 : 0;
+      const tgt = a.target || 0;
+      return `<div class="allocrow">
+        <b title="${htmlEscape(a.name)}">${htmlEscape(a.ticker)}</b>
+        <div class="bar">
+          <i style="width:${Math.min(100, s)}%"></i>
+          ${tgt ? `<span class="tgt" style="left:${Math.min(100, tgt)}%"></span>` : ''}
+        </div>
+        <span>${pf(s)}</span>
+        <span class="muted">${tgt ? pf(tgt) : '—'}</span>
+      </div>`;
+    }).join('');
+}
+
+/* ========== IMPROVED CHART ========== */
+function buildChartRows(range) {
+  let rows = [...(db.history || [])]
+    .filter(r => r && r.date)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  // убрать дубликаты дат — оставить последнее
+  const byDate = new Map();
+  rows.forEach(r => byDate.set(r.date, r));
+  rows = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+
+  rows = rows.map(r => {
+    const deposits = r.deposits != null
+      ? Number(r.deposits)
+      : cumulativeDepositsUntil(r.date);
+    const dividends = cumulativeDivsUntil(r.date);
+    return {
+      date: r.date,
+      value: Number(r.value) || 0,
+      invested: Number(r.invested) || 0,
+      deposits: Math.max(0, deposits),
+      dividends: Math.max(0, dividends)
+    };
+  });
+
+  const today = new Date().toISOString().slice(0, 10);
+  const live = {
+    date: today,
+    value: total(),
+    invested: invested(),
+    deposits: Math.max(0, cumulativeDepositsUntil(today)),
+    dividends: Math.max(0, cumulativeDivsUntil(today))
+  };
+  if (rows.length && rows[rows.length - 1].date === today) {
+    rows[rows.length - 1] = live;
+  } else {
+    rows.push(live);
+  }
+
+  if (range && range !== 'all') {
+    const n = +range;
+    if (n > 0) rows = rows.slice(-Math.max(2, n));
+  }
+  return rows;
+}
+
+function drawChart() {
+  const c = el('canvas');
+  if (!c) return;
+  const tip = el('chartTip');
+  const meta = el('chartMeta');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const range = (el('chartRange') && el('chartRange').value) || 'all';
+  const scaleMode = (el('chartScale') && el('chartScale').value) || 'fit';
+  const showDep = false;
+  const showDiv = el('chartArea') ? el('chartArea').checked : true;
+
+  const rows = buildChartRows(range);
+  const w = Math.max(c.clientWidth || 800, 280);
+  const h = Math.max(c.clientHeight || 320, 260);
+  c.width = Math.floor(w * dpr);
+  c.height = Math.floor(h * dpr);
+  const ctx = c.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+
+  if (rows.length < 2) {
+    ctx.fillStyle = '#8fa1b5';
+    ctx.font = '13px system-ui,sans-serif';
+    ctx.fillText('Недостаточно точек истории', 20, 36);
+    return;
+  }
+
+  const padL = 58, padR = showDiv ? 52 : 16, padT = 16, padB = 34;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+
+  // Левая ось: капитал + пополнения (крупные суммы)
+  const leftVals = rows.flatMap(r => {
+    const v = [r.value];
+    if (showDep) v.push(r.deposits);
+    return v;
+  });
+  let maxL = Math.max(...leftVals, 1);
+  let minL = Math.min(...leftVals);
+  if (scaleMode === 'zero') {
+    minL = 0;
+    maxL = maxL * 1.06;
+  } else if (scaleMode === 'tight') {
+    const sp = maxL - minL || 1;
+    maxL += sp * 0.04;
+    minL = Math.max(0, minL - sp * 0.04);
+  } else {
+    const sp = maxL - minL || 1;
+    maxL += sp * 0.1;
+    minL = Math.max(0, minL - sp * 0.05);
+  }
+  if (maxL <= minL) maxL = minL + 1;
+
+  // Правая ось: дивиденды (меньший масштаб)
+  const divVals = rows.map(r => r.dividends);
+  let maxR = Math.max(...divVals, 1);
+  let minR = 0;
+  maxR = maxR * 1.15;
+
+  const X = i => padL + (rows.length <= 1 ? plotW / 2 : i * plotW / (rows.length - 1));
+  const YL = v => padT + (maxL - v) / (maxL - minL) * plotH;
+  const YR = v => padT + (maxR - v) / (maxR - minR) * plotH;
+
+  // сетка по левой оси
+  ctx.strokeStyle = 'rgba(38,53,72,.5)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const v = minL + (maxL - minL) * (i / 4);
+    const y = YL(v);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(w - padR, y);
+    ctx.stroke();
+    ctx.fillStyle = '#8fa1b5';
+    ctx.font = '10px system-ui,sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(compactRub(v), padL - 6, y + 3);
+  }
+  // подписи правой оси
+  if (showDiv) {
+    ctx.fillStyle = '#3dd68c';
+    ctx.textAlign = 'left';
+    for (let i = 0; i <= 4; i++) {
+      const v = minR + (maxR - minR) * (i / 4);
+      const y = YR(v);
+      ctx.fillText(compactRub(v), w - padR + 6, y + 3);
+    }
+  }
+
+  // заливка капитала
+  ctx.beginPath();
+  rows.forEach((r, i) => {
+    const x = X(i), y = YL(r.value);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(X(rows.length - 1), padT + plotH);
+  ctx.lineTo(X(0), padT + plotH);
+  ctx.closePath();
+  const g = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+  g.addColorStop(0, 'rgba(95,168,255,.18)');
+  g.addColorStop(1, 'rgba(95,168,255,0)');
+  ctx.fillStyle = g;
+  ctx.fill();
+
+  function line(getY, color, width, dash) {
+    ctx.beginPath();
+    ctx.setLineDash(dash || []);
+    rows.forEach((r, i) => {
+      const x = X(i), y = getY(r);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  if (showDep) line(r => YL(r.deposits), '#f0b429', 2, [5, 4]);
+  if (showDiv) line(r => YR(r.dividends), '#3dd68c', 2.4, []);
+  line(r => YL(r.value), '#5fa8ff', 2.6, []);
+
+  // точки капитала
+  rows.forEach((r, i) => {
+    ctx.beginPath();
+    ctx.arc(X(i), YL(r.value), 3.2, 0, Math.PI * 2);
+    ctx.fillStyle = '#5fa8ff';
+    ctx.fill();
+    ctx.strokeStyle = '#0b121a';
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+  });
+
+  // даты
+  ctx.fillStyle = '#8fa1b5';
+  ctx.font = '10px system-ui,sans-serif';
+  ctx.textAlign = 'center';
+  const step = rows.length > 8 ? Math.ceil(rows.length / 6) : 1;
+  rows.forEach((r, i) => {
+    if (i % step === 0 || i === rows.length - 1) {
+      ctx.fillText(r.date.slice(5), X(i), h - 10);
+    }
+  });
+
+  const first = rows[0], last = rows[rows.length - 1];
+  const dVal = last.value - first.value;
+  const dPct = first.value ? dVal / first.value * 100 : 0;
+  if (meta) {
+    meta.textContent = first.date.slice(5) + '→' + last.date.slice(5) +
+      ' · ' + signed(dVal, fmt) + ' (' + signed(dPct, pf) + ')' +
+      ' · дивы ' + fmt(last.dividends);
+  }
+
+  function tipAt(best) {
+    if (!tip) return;
+    const r = rows[best];
+    const delta = r.value - r.deposits;
+    tip.style.display = 'block';
+    tip.style.left = Math.min(w - 190, Math.max(6, X(best) + 8)) + 'px';
+    tip.style.top = Math.max(6, YL(r.value) - 88) + 'px';
+    tip.innerHTML = '<b>' + r.date + '</b><br>' +
+      'Капитал: ' + fmt(r.value) + '<br>' +
+      'Пополнения: ' + fmt(r.deposits) + '<br>' +
+      'Дивиденды: ' + fmt(r.dividends) + '<br>' +
+      '<span class="' + (delta >= 0 ? 'good' : 'bad') + '">К вложениям: ' + signed(delta, fmt) + '</span>';
+  }
+
+  c.onmousemove = ev => {
+    const rect = c.getBoundingClientRect();
+    const mx = (ev.clientX - rect.left) * (w / rect.width);
+    let best = 0, bd = Infinity;
+    rows.forEach((_, i) => {
+      const d = Math.abs(X(i) - mx);
+      if (d < bd) { bd = d; best = i; }
+    });
+    if (bd > 50) { tip.style.display = 'none'; return; }
+    tipAt(best);
+  };
+  c.onmouseleave = () => { if (tip) tip.style.display = 'none'; };
+}
+
+function compactRub(v) {
+  const n = Number(v) || 0;
+  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + ' млн';
+  if (Math.abs(n) >= 1e3) return Math.round(n / 1e3) + ' тыс';
+  return String(Math.round(n));
+}
+
+/* ========== ASSETS ========== */
+function assets() {
+  const rows = db.assets.filter(a =>
+    !a.archived &&
+    (!filter.q || (`${a.ticker} ${a.name}`).toLowerCase().includes(filter.q.toLowerCase())) &&
+    (filter.contour === 'Все' || a.contour === filter.contour) &&
+    (filter.type === 'Все' || a.type === filter.type)
+  ).sort((a, b) => assetValue(b) - assetValue(a));
+
+  el('main').innerHTML = `
+  <div class="top">
+    <div>
+      <h3 style="margin:0">Активы</h3>
+      <span class="muted">P&amp;L позиции = (цена − средняя) × qty · сортировка по стоимости</span>
+    </div>
+    <button type="button" class="btn primary" data-act="addAsset">＋ Добавить</button>
+  </div>
+  <div class="toolbar">
+    <input class="input" id="q" placeholder="Тикер или название" value="${htmlEscape(filter.q)}">
+    <select class="select" id="contourF"><option>Все</option><option>ИИС</option><option>Резерв</option></select>
+    <select class="select" id="typeF"><option>Все</option><option>Акция</option><option>Фонд</option><option>ОФЗ</option><option>Корп. облигация</option><option>Другое</option></select>
+  </div>
+  <div class="tablewrap"><table class="table">
+    <thead><tr>
+      <th>Актив</th><th>Контур</th><th>Кол-во</th><th>Средняя</th><th>Цена</th>
+      <th>Стоимость</th><th>P&amp;L</th><th>День</th><th>Доля</th><th>Фунд.</th><th></th>
+    </tr></thead>
+    <tbody>${rows.length ? rows.map(a => {
+      const v = assetValue(a);
+      const p = assetPnl(a);
+      const d = assetDayPnl(a);
+      const s = total() ? v / total() * 100 : 0;
+      return `<tr>
+        <td><b>${htmlEscape(a.ticker)}</b><br><span class="muted">${htmlEscape(a.name)}</span>
+          ${a.online === false ? ' <span class="pill">offline</span>' : ''}</td>
+        <td><span class="pill">${htmlEscape(a.contour)}</span></td>
+        <td>${nfmt(a.qty, 4)}</td>
+        <td>${nfmt(a.avg, 2)}</td>
+        <td>${nfmt(a.price, 4)}</td>
+        <td>${fmt(v)}</td>
+        <td class="${p >= 0 ? 'good' : 'bad'}">${signed(p, fmt)}</td>
+        <td class="${d > 0 ? 'good' : (d < 0 ? 'bad' : 'muted')}">${d ? signed(d, fmt) : '—'}</td>
+        <td>${pf(s)}</td>
+        <td>${a.status || '—'}</td>
+        <td>
+          <button class="btn" data-edit="${a.id}" title="Редактировать">✏️</button>
+          <button class="btn danger" data-delete="${a.id}" title="Удалить / архив">🗑</button>
+        </td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="11" class="empty">Ничего не найдено</td></tr>`}
+    </tbody>
+  </table></div>`;
+
+  el('q').oninput = e => { filter.q = e.target.value; assets(); };
+  el('contourF').value = filter.contour;
+  el('typeF').value = filter.type;
+  el('contourF').onchange = e => { filter.contour = e.target.value; assets(); };
+  el('typeF').onchange = e => { filter.type = e.target.value; assets(); };
+  // кнопки через data-act / data-edit (делегирование в bindUI)
+}
+
+function assetModal(a) {
+  const m = document.createElement('div');
+  m.className = 'modal';
+  const tickerList = Object.keys(TICKER_DICT).map(t =>
+    `<option value="${htmlEscape(t)}">${htmlEscape(TICKER_DICT[t].name)}</option>`).join('');
+  const nameList = Object.keys(TICKER_DICT).map(t =>
+    `<option value="${htmlEscape(TICKER_DICT[t].name)}">${htmlEscape(t)}</option>`).join('');
+  m.innerHTML = `<div class="modalbox">
+    <button class="close" data-x>×</button>
+    <h3>${a ? 'Редактировать актив' : 'Добавить актив'}</h3>
+    <div class="form">
+      <div class="row">
+        <div class="field"><label>Тикер</label>
+          <input class="input" id="at" list="tickerSuggest" autocomplete="off" value="${htmlEscape(a?.ticker || '')}">
+          <datalist id="tickerSuggest">${tickerList}</datalist>
+          <div class="hint">Введите тикер — название и тип подставятся сами</div>
+        </div>
+        <div class="field"><label>Название</label>
+          <input class="input" id="an" list="nameSuggest" autocomplete="off" value="${htmlEscape(a?.name || '')}">
+          <datalist id="nameSuggest">${nameList}</datalist>
+          <div class="hint">Или название — подтянется тикер</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Тип</label>
+          <select class="select" id="ay">${['Акция','Фонд','ОФЗ','Корп. облигация','Другое'].map(v =>
+            `<option ${a?.type === v ? 'selected' : ''}>${v}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Контур</label>
+          <select class="select" id="ac">
+            <option ${a?.contour === 'ИИС' ? 'selected' : ''}>ИИС</option>
+            <option ${a?.contour === 'Резерв' ? 'selected' : ''}>Резерв</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Количество</label><input class="input" id="aq" type="number" step="any" value="${a?.qty ?? 0}"></div>
+        <div class="field"><label>Средняя цена</label><input class="input" id="aa" type="number" step="any" value="${a?.avg ?? 0}"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Текущая цена</label><input class="input" id="ap" type="number" step="any" value="${a?.price ?? 0}"></div>
+        <div class="field"><label>Целевая доля, %</label><input class="input" id="aw" type="number" step="0.1" value="${a?.target ?? 0}"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Фундаментальный статус</label>
+          <select class="select" id="as">
+            ${['—','🟢','🟡','🟠','🔴','⛔'].map(s => `<option ${a?.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Онлайн-котировка</label>
+          <select class="select" id="ao">
+            <option value="1" ${a?.online !== false ? 'selected' : ''}>Да</option>
+            <option value="0" ${a?.online === false ? 'selected' : ''}>Нет</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>SECID MOEX (ОФЗ)</label>
+        <input class="input" id="asid" placeholder="SU26239RMFS2" value="${htmlEscape(a?.secid || OFZ_MAP[a?.ticker] || '')}">
+      </div>
+    </div>
+    <div class="modalfoot">
+      <button class="btn" data-x>Отмена</button>
+      <button class="btn primary" data-save>Сохранить</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+  const close = () => m.remove();
+  m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+  const $ = id => m.querySelector('#' + id);
+
+  // автоподстановка тикер → название / название → тикер
+  let lock = false;
+  $('at').addEventListener('input', () => {
+    if (lock) return;
+    const t = $('at').value.trim().toUpperCase();
+    const info = TICKER_DICT[t];
+    if (info) {
+      lock = true;
+      $('an').value = info.name;
+      if (info.type) $('ay').value = info.type;
+      if (info.secid) $('asid').value = info.secid;
+      else if (OFZ_MAP[t]) $('asid').value = OFZ_MAP[t];
+      lock = false;
+    }
+  });
+  $('an').addEventListener('input', () => {
+    if (lock) return;
+    const raw = $('an').value.trim().toLowerCase();
+    let t = NAME_TO_TICKER[raw];
+    if (!t) {
+      const hit = Object.keys(NAME_TO_TICKER).find(k => k.includes(raw) || raw.includes(k));
+      if (hit && raw.length >= 3) t = NAME_TO_TICKER[hit];
+    }
+    if (t && TICKER_DICT[t]) {
+      lock = true;
+      $('at').value = t;
+      const info = TICKER_DICT[t];
+      if (info.type) $('ay').value = info.type;
+      if (info.secid) $('asid').value = info.secid;
+      else if (OFZ_MAP[t]) $('asid').value = OFZ_MAP[t];
+      lock = false;
+    }
+  });
+
+  m.querySelector('[data-save]').onclick = () => {
+    try {
+      const ticker = $('at').value.trim().toUpperCase();
+      const name = $('an').value.trim();
+      if (!ticker || !name) return alert('Заполните тикер и название');
+      const o = {
+        id: a?.id || uid('A'),
+        ticker, name,
+        type: $('ay').value,
+        contour: $('ac').value,
+        target: parseNum($('aw').value),
+        qty: parseNum($('aq').value),
+        avg: parseNum($('aa').value),
+        price: parseNum($('ap').value),
+        status: $('as').value,
+        online: $('ao').value === '1',
+        secid: $('asid').value.trim() || undefined,
+        archived: a?.archived || false
+      };
+      if (a) Object.assign(a, o); else db.assets.push(o);
+      save(); close(); render();
+      setNotice('Актив ' + ticker + ' сохранён');
+    } catch (err) {
+      alert('Ошибка: ' + (err.message || err));
+    }
+  };
+  m.addEventListener('keydown', e => {
+    if (e.key === 'Escape') close();
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) m.querySelector('[data-save]').click();
+  });
+}
+
+function deleteAsset(id) {
+  const a = db.assets.find(x => x.id === id);
+  if (!a) return;
+  const choice = prompt(
+    `Что сделать с ${a.ticker}?\n1 — архивировать (qty=0, история в ops остаётся)\n2 — удалить актив и связанные операции\n3 — отмена`,
+    '1'
+  );
+  if (choice === '1') {
+    a.qty = 0; a.price = 0; a.archived = true;
+  } else if (choice === '2') {
+    db.assets = db.assets.filter(x => x.id !== id);
+    db.ops = (db.ops || []).filter(x => x.assetId !== id);
+  } else return;
+  save(); render();
+}
+
+/* ========== OPS ========== */
+function ops() {
+  ensureOpIds();
+  const list = [...(db.ops || [])].reverse();
+  const sumBuy = (db.ops || []).filter(o => o.type === 'Покупка').reduce((s, o) => s + (o.amount || 0), 0);
+  const sumSell = (db.ops || []).filter(o => o.type === 'Продажа').reduce((s, o) => s + (o.amount || 0), 0);
+  const sumDep = netDeposits();
+  el('main').innerHTML = `
+  <div class="grid">
+    ${stat('Операций', list.length)}
+    ${stat('Покупки', fmt(sumBuy))}
+    ${stat('Продажи', fmt(sumSell))}
+    ${stat('Чистые пополнения', fmt(sumDep), sumDep >= 0 ? 'good' : 'bad')}
+  </div>
+  <div class="top" style="margin-top:12px">
+    <div>
+      <h3 style="margin:0">Журнал операций</h3>
+      <span class="muted">Покупка обновляет среднюю · дивиденд/купон → в Дивиденды · пополнение в капитал</span>
+    </div>
+    <button type="button" class="btn primary" data-act="addOp">＋ Операция</button>
+  </div>
+  <div class="tablewrap"><table class="table">
+    <thead><tr><th>Дата</th><th>Тип</th><th>Актив</th><th>Кол-во</th><th>Цена</th><th>Сумма</th><th>Комментарий</th><th></th></tr></thead>
+    <tbody>${list.length ? list.map((o, idx) => `
+      <tr>
+        <td>${htmlEscape(o.date)}</td>
+        <td>${htmlEscape(o.type)}</td>
+        <td>${htmlEscape(o.ticker || '—')}</td>
+        <td>${nfmt(o.qty, 4)}</td>
+        <td>${o.price ? nfmt(o.price, 2) : ''}</td>
+        <td>${fmt(o.amount)}</td>
+        <td>${htmlEscape(o.note || '')}</td>
+        <td><button type="button" class="btn danger" data-op-del="${htmlEscape(o.id)}" data-op-i="${db.ops.indexOf(o)}">🗑</button></td>
+      </tr>`).join('') : `<tr><td colspan="8" class="empty">Операций пока нет. Позиции загружены как стартовый снимок.</td></tr>`}
+    </tbody>
+  </table></div>`;
+  document.querySelectorAll('[data-op-del]').forEach(btn => {
+    btn.onclick = function (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (!window.confirm('Удалить операцию?')) return;
+      const ok = removeOpById(btn.getAttribute('data-op-del'), parseInt(btn.getAttribute('data-op-i'), 10));
+      if (!ok) { window.alert('Не найдено'); return; }
+      tab = 'ops';
+      render();
+    };
+  });
+
+}
+
+
+/** Применить операцию к позициям и кэшу */
+
+/** Базовый кэш (остаток на счёте без учёта журнала пользователя) */
+function baseCash() {
+  const b = Number(db.settings && db.settings.baseAdjustment);
+  return Number.isFinite(b) ? b : 3.71;
+}
+
+/**
+ * Полный пересчёт свободного кэша из журнала + дивидендов (не seed).
+ * Вызывать после любого add/delete операции или дивиденда.
+ */
+function recomputeCash() {
+  if (!db.settings) db.settings = {};
+  let cash = baseCash();
+  (db.ops || []).forEach(o => {
+    const a = Number(o.amount) || 0;
+    const t = o.type;
+    if (t === 'Пополнение') cash += a;
+    else if (t === 'Вывод') cash -= a;
+    else if (t === 'Покупка') cash -= a;
+    else if (t === 'Продажа') cash += a;
+    else if (t === 'Дивиденд' || t === 'Купон') cash += a;
+    else if (t === 'Комиссия') cash -= Math.abs(a);
+  });
+  (db.dividends || []).forEach(d => {
+    if (d.fromOp) return;          // уже учтено в ops
+    if (d.seed || d.cashApplied === false) return; // исторические seed
+    cash += Number(d.amount) || 0;
+  });
+  db.settings.brokerAdjustment = cash;
+  return cash;
+}
+
+/** Изменение qty/avg по операции (без кэша — кэш через recomputeCash) */
+function applyOpPositions(o, sign) {
+  if (!o) return;
+  const s = sign >= 0 ? 1 : -1;
+  const a = o.assetId
+    ? db.assets.find(x => x.id === o.assetId)
+    : (o.ticker ? db.assets.find(x => x.ticker === o.ticker) : null);
+  const qty = Number(o.qty) || 0;
+  const amount = Number(o.amount) || 0;
+  const t = o.type;
+  if (!a || qty <= 0) return;
+
+  if (t === 'Покупка') {
+    if (s > 0) {
+      const cost = (a.qty || 0) * (a.avg || 0);
+      a.qty = (a.qty || 0) + qty;
+      a.avg = a.qty ? (cost + amount) / a.qty : (a.avg || o.price || 0);
+    } else {
+      a.qty = Math.max(0, (a.qty || 0) - qty);
+    }
+  } else if (t === 'Продажа') {
+    if (s > 0) a.qty = Math.max(0, (a.qty || 0) - qty);
+    else a.qty = (a.qty || 0) + qty;
+  }
+}
+
+function applyOp(o, sign) {
+  if (!o) return;
+  const s = sign >= 0 ? 1 : -1;
+  const amount = Number(o.amount) || 0;
+  const t = o.type;
+  applyOpPositions(o, sign);
+
+  if ((t === 'Дивиденд' || t === 'Купон') && amount) {
+    if (s > 0) {
+      if (!Array.isArray(db.dividends)) db.dividends = [];
+      const divId = o.divId || uid('d');
+      o.divId = divId;
+      if (!db.dividends.some(d => d.id === divId || d.fromOp === o.id)) {
+        const a = o.assetId ? db.assets.find(x => x.id === o.assetId) : null;
+        db.dividends.push({
+          id: divId,
+          date: o.date,
+          asset: a ? a.ticker : (o.ticker || '—'),
+          type: t,
+          amount,
+          note: o.note || 'из журнала',
+          fromOp: o.id,
+          cashApplied: true
+        });
+      }
+    } else {
+      db.dividends = (db.dividends || []).filter(d => d.fromOp !== o.id && d.id !== o.divId);
+    }
+  }
+  recomputeCash();
+}
+
+function removeOpById(id, idx) {
+  if (!Array.isArray(db.ops)) db.ops = [];
+  ensureOpIds();
+  let i = db.ops.findIndex(o => o && String(o.id) === String(id));
+  if (i < 0 && idx != null && idx >= 0 && idx < db.ops.length) i = +idx;
+  if (i < 0) return false;
+  const o = db.ops[i];
+  db.ops.splice(i, 1);
+  try { applyOpPositions(o, -1); } catch (e) { console.warn(e); }
+  try {
+    if (o && (o.type === 'Дивиденд' || o.type === 'Купон')) {
+      db.dividends = (db.dividends || []).filter(d => d.fromOp !== o.id && d.id !== o.divId);
+    }
+  } catch (e) { console.warn(e); }
+  try { recomputeCash(); } catch (e) { console.warn(e); }
+  try { autoSnapshot(); } catch (e) { console.warn(e); }
+  try { save(); } catch (e) { console.warn(e); }
+  return true;
+}
+
+function ensureOpIds() {
+  if (!Array.isArray(db.ops)) db.ops = [];
+  db.ops.forEach((o, i) => {
+    if (!o.id) o.id = 'o_auto_' + i + '_' + (o.date || '') + '_' + (o.type || '');
+  });
+}
+
+/** Сохранить текущие цены в график и на диск */
+function persistState() {
+  try { recomputeCash(); } catch (e) { console.warn('recomputeCash', e); }
+  try { autoSnapshot(); } catch (e) { console.warn('autoSnapshot', e); }
+  try { save(); } catch (e) { console.warn('save', e); }
+}
+
+function opModal() {
+
+
+  const m = document.createElement('div');
+  m.className = 'modal';
+  m.innerHTML = `<div class="modalbox">
+    <button class="close" data-x>×</button>
+    <h3>Новая операция</h3>
+    <div class="form">
+      <div class="row">
+        <div class="field"><label>Дата</label><input class="input" data-f="od" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+        <div class="field"><label>Тип</label>
+          <select class="select" data-f="ot">
+            <option>Покупка</option><option>Продажа</option><option>Дивиденд</option><option>Купон</option>
+            <option>Пополнение</option><option>Вывод</option><option>Комиссия</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Актив</label>
+        <select class="select" data-f="oa">
+          <option value="">Без актива</option>
+          ${db.assets.filter(a => !a.archived).map(a =>
+            `<option value="${a.id}">${htmlEscape(a.ticker)} — ${htmlEscape(a.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="row">
+        <div class="field"><label>Количество</label><input class="input" data-f="oq" type="number" step="any" inputmode="decimal"></div>
+        <div class="field"><label>Цена</label><input class="input" data-f="op" type="number" step="any" inputmode="decimal"></div>
+      </div>
+      <div class="field"><label>Сумма (если пусто — qty × цена)</label><input class="input" data-f="om" type="number" step="any" inputmode="decimal"></div>
+      <div class="field"><label>Комментарий</label><textarea class="textarea" data-f="on" rows="2"></textarea></div>
+    </div>
+    <div class="modalfoot">
+      <button class="btn" data-x>Отмена</button>
+      <button class="btn primary" data-save>Добавить</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+  const q = sel => m.querySelector(`[data-f="${sel}"]`);
+  const close = () => m.remove();
+  m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+  m.querySelector('[data-save]').addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    try {
+      if (!db.settings) db.settings = {};
+      if (!Array.isArray(db.ops)) db.ops = [];
+      if (!Array.isArray(db.dividends)) db.dividends = [];
+      const a = db.assets.find(x => x.id === (q('oa') && q('oa').value));
+      const qty = parseNum(q('oq') && q('oq').value);
+      const price = parseNum(q('op') && q('op').value);
+      let amount = parseNum(q('om') && q('om').value);
+      if (!amount && qty && price) amount = Math.round(qty * price * 100) / 100;
+      const t = (q('ot') && q('ot').value) || 'Покупка';
+      if (!amount && !(t === 'Покупка' || t === 'Продажа')) {
+        alert('Укажите сумму');
+        return;
+      }
+      if ((t === 'Покупка' || t === 'Продажа') && (!a || !qty)) {
+        alert('Для покупки/продажи выберите актив и количество');
+        return;
+      }
+      const o = {
+        id: uid('o'),
+        date: (q('od') && q('od').value) || new Date().toISOString().slice(0, 10),
+        type: t,
+        assetId: a ? a.id : '',
+        ticker: a ? a.ticker : '',
+        qty, price, amount,
+        note: ((q('on') && q('on').value) || '').trim()
+      };
+      if (!o.id) o.id = uid('o');
+      db.ops.push(o);
+      applyOp(o, +1);
+      persistState();
+      close();
+      tab = 'ops';
+      render();
+      setNotice('✓ «' + t + '» ' + fmt(amount) + ' · капитал: ' + fmt(total()) + ' · P&L: ' + signed(pnl(), fmt));
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка сохранения: ' + (err.message || err));
+    }
+  });
+}
+
+/* ========== DIVS ========== */
+function portfolioTickers() {
+  return db.assets.filter(a => !a.archived && (a.qty || 0) > 0);
+}
+
+function divs() {
+  if (!Array.isArray(db.dividends)) db.dividends = [];
+  db.dividends.forEach(d => { if (!d.id) d.id = uid('d'); });
+  const rows = [...db.dividends].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const sum = divTotal();
+  const grouped = {};
+  rows.forEach(x => { grouped[x.asset] = (grouped[x.asset] || 0) + (Number(x.amount) || 0); });
+  const byAsset = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
+  const tickers = portfolioTickers();
+
+  el('main').innerHTML = `
+  <div class="grid">
+    ${stat('Всего выплат', fmt(sum), 'good')}
+    ${stat('Записей', rows.length)}
+    ${stat('Активов', Object.keys(grouped).length)}
+    ${stat('К вложениям', invested() ? pf(sum / invested() * 100) : '—', 'good')}
+  </div>
+  <div class="card section">
+    <h3 style="margin:0 0 10px">По активам</h3>
+    <div class="allocation">
+      ${byAsset.map(([ticker, amount]) => {
+        const pct = sum ? amount / sum * 100 : 0;
+        return `<div class="allocrow">
+          <b>${htmlEscape(ticker)}</b>
+          <div class="bar"><i style="width:${Math.min(100, pct)}%"></i></div>
+          <span class="good">${fmt(amount)}</span>
+          <span class="muted">${pf(pct)}</span>
+        </div>`;
+      }).join('') || '<div class="subtle">Нет данных</div>'}
+    </div>
+  </div>
+  <div class="card section">
+    <div class="top">
+      <div>
+        <h3 style="margin:0">Полученные дивиденды и купоны</h3>
+        <span class="muted">Уже полученные выплаты · сумма в капитале</span>
+      </div>
+      <button type="button" class="btn primary" data-act="addDiv" ${tickers.length ? '' : 'disabled'}>＋ Добавить</button>
+    </div>
+    <div class="tablewrap" style="margin-top:10px"><table class="table">
+      <thead><tr><th>Дата</th><th>Актив</th><th>Тип</th><th>Сумма</th><th>Доля</th><th>Комментарий</th><th></th></tr></thead>
+      <tbody>${rows.length ? rows.map((x, i) => `
+        <tr>
+          <td>${htmlEscape(x.date)}</td>
+          <td><b>${htmlEscape(x.asset)}</b></td>
+          <td>${htmlEscape(x.type)}</td>
+          <td class="good">${nfmt(x.amount, 2)} ₽</td>
+          <td class="muted">${sum ? pf((Number(x.amount)||0) / sum * 100) : '—'}</td>
+          <td>${htmlEscape(x.note || '')}</td>
+          <td style="white-space:nowrap">
+            <button type="button" class="btn" data-div-edit="${htmlEscape(x.id)}" title="Изменить">✏️</button>
+            <button type="button" class="btn danger" data-div-del="${htmlEscape(x.id)}" data-div-i="${i}" title="Удалить">🗑</button>
+          </td>
+        </tr>`).join('') : `<tr><td colspan="7" class="empty">Пока пусто — добавьте полученную выплату</td></tr>`}
+      </tbody>
+    </table></div>
+  </div>`;
+  document.querySelectorAll('[data-div-del]').forEach(btn => {
+    btn.onclick = function (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (!window.confirm('Удалить выплату?')) return;
+      const id = btn.getAttribute('data-div-del');
+      db.dividends = (db.dividends || []).filter(d => String(d.id) !== String(id));
+      persistState();
+      tab = 'divs';
+      render();
+    };
+  });
+  document.querySelectorAll('[data-div-edit]').forEach(btn => {
+    btn.onclick = function (ev) {
+      ev.preventDefault();
+      const id = btn.getAttribute('data-div-edit');
+      const item = (db.dividends || []).find(d => String(d.id) === String(id));
+      if (item) divModal(item);
+    };
+  });
+
+}
+
+function assetSelectOptions(selected) {
+  return portfolioTickers().map(a =>
+    `<option value="${htmlEscape(a.ticker)}" ${a.ticker === selected ? 'selected' : ''}>${htmlEscape(a.ticker)} — ${htmlEscape(a.name)} (${nfmt(a.qty, 2)} шт)</option>`
+  ).join('');
+}
+
+function divModal(edit) {
+  const tickers = portfolioTickers();
+  if (!tickers.length) {
+    alert('В портфеле нет позиций — сначала добавьте активы');
+    return;
+  }
+  const m = document.createElement('div');
+  m.className = 'modal';
+  const isEdit = !!edit;
+  m.innerHTML = `<div class="modalbox">
+    <button class="close" data-x>×</button>
+    <h3>${isEdit ? 'Редактировать выплату' : 'Новая выплата'}</h3>
+    <div class="form">
+      <div class="row">
+        <div class="field"><label>Дата</label>
+          <input class="input" data-f="dd" type="date" value="${htmlEscape(edit?.date || new Date().toISOString().slice(0,10))}">
+        </div>
+        <div class="field"><label>Тип</label>
+          <select class="select" data-f="dt">
+            <option ${!edit || edit.type === 'Дивиденд' ? 'selected' : ''}>Дивиденд</option>
+            <option ${edit?.type === 'Купон' ? 'selected' : ''}>Купон</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Актив из портфеля</label>
+        <select class="select" data-f="da">${assetSelectOptions(edit?.asset)}</select>
+      </div>
+      <div class="field"><label>Сумма, ₽</label>
+        <input class="input" data-f="dam" type="text" inputmode="decimal" value="${edit ? (edit.amount ?? '') : ''}" placeholder="2420.50">
+      </div>
+      <div class="field"><label>Комментарий</label>
+        <input class="input" data-f="dn" value="${htmlEscape(edit?.note || '')}" placeholder="получено">
+      </div>
+    </div>
+    <div class="modalfoot">
+      <button type="button" class="btn" data-x>Отмена</button>
+      <button type="button" class="btn primary" data-save>${isEdit ? 'Сохранить' : 'Добавить'}</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+  const q = sel => m.querySelector(`[data-f="${sel}"]`);
+  const close = () => m.remove();
+  m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+  m.querySelector('[data-save]').addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    try {
+      if (!db.settings) db.settings = {};
+      if (!Array.isArray(db.dividends)) db.dividends = [];
+      const amount = parseNum(q('dam') && q('dam').value);
+      const ticker = (q('da') && q('da').value || '').trim().toUpperCase();
+      if (!ticker) { alert('Выберите актив из портфеля'); return; }
+      if (!amount || amount <= 0) { alert('Укажите сумму'); return; }
+      if (!tickers.some(a => a.ticker === ticker)) {
+        alert('Можно указать только бумагу из портфеля');
+        return;
+      }
+      if (isEdit) {
+        edit.date = (q('dd') && q('dd').value) || edit.date;
+        edit.asset = ticker;
+        edit.type = (q('dt') && q('dt').value) || 'Дивиденд';
+        edit.amount = amount;
+        edit.note = ((q('dn') && q('dn').value) || '').trim() || 'получено';
+        if (edit.seed) { edit.seed = false; edit.cashApplied = true; }
+        else edit.cashApplied = true;
+      } else {
+        db.dividends.push({
+          id: uid('d'),
+          date: (q('dd') && q('dd').value) || new Date().toISOString().slice(0, 10),
+          asset: ticker,
+          type: (q('dt') && q('dt').value) || 'Дивиденд',
+          amount,
+          note: ((q('dn') && q('dn').value) || '').trim() || 'получено',
+          cashApplied: true
+        });
+      }
+      persistState();
+      close();
+      tab = 'divs';
+      render();
+      setNotice('✓ Выплаты: ' + fmt(divTotal()) + ' · капитал: ' + fmt(total()) + ' · P&L+дивы: ' + signed(profitWithDivs(), fmt));
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка: ' + (err.message || err));
+    }
+  });
+}
+
+
+/** Утверждённые выплаты: сумма, попадающая в календарный период по payDate */
+function inPeriod(payDate, period) {
+  if (!payDate) return false;
+  const d = new Date(payDate + 'T12:00:00');
+  if (isNaN(d)) return false;
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  if (period === 'month') return d.getFullYear() === y && d.getMonth() === m;
+  if (period === 'quarter') {
+    const q = Math.floor(m / 3), dq = Math.floor(d.getMonth() / 3);
+    return d.getFullYear() === y && dq === q;
+  }
+  if (period === 'year') return d.getFullYear() === y;
+  // next12: от сегодня + 365 дней
+  if (period === 'next12') {
+    const t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const t1 = new Date(t0); t1.setDate(t1.getDate() + 365);
+    return d >= t0 && d <= t1;
+  }
+  return false;
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/** Утверждённые и ещё не полученные (дата выплаты >= сегодня) */
+function approvedPlanned() {
+  const today = todayISO();
+  return (db.planned || []).filter(p => {
+    if ((p.status || 'approved') !== 'approved') return false;
+    if (p.received) return false;
+    const d = p.payDate || p.nextDate || '';
+    return d >= today; // будущие и сегодня — ещё к получению
+  });
+}
+
+function planSum(period) {
+  return approvedPlanned()
+    .filter(p => inPeriod(p.payDate || p.nextDate, period))
+    .reduce((s, p) => s + (Number(p.amount) || 0), 0);
+}
+
+function plan() {
+  if (!Array.isArray(db.planned)) db.planned = [];
+  db.planned.forEach(p => {
+    if (!p.id) p.id = uid('p');
+    if (!p.status) p.status = 'approved';
+    if (!p.payDate && p.nextDate) p.payDate = p.nextDate;
+  });
+  // показываем только утверждённые
+  const rows = approvedPlanned().sort((a, b) => (a.payDate || '').localeCompare(b.payDate || ''));
+  const month = planSum('month');
+  const quarter = planSum('quarter');
+  const year = planSum('year');
+  const next12 = planSum('next12');
+  const inv = invested();
+  const cap = total();
+  const yldCost = inv ? next12 / inv * 100 : 0;
+  const yldCap = cap ? next12 / cap * 100 : 0;
+  const cfMonth = cap ? month / cap * 100 : 0;
+  const tickers = portfolioTickers();
+
+  el('main').innerHTML = `
+  <div class="grid">
+    ${stat('Утверждено / этот месяц', fmt(month), 'good')}
+    ${stat('Этот квартал', fmt(quarter), 'good')}
+    ${stat('Этот год', fmt(year), 'good')}
+    ${stat('Ближ. 12 мес.', fmt(next12), 'good')}
+  </div>
+  <div class="grid section">
+    ${stat('Доходность к вложениям', pf(yldCost), 'good')}
+    ${stat('К капиталу (12 мес.)', pf(yldCap), 'good')}
+    ${stat('Поток этот месяц', pf(cfMonth))}
+    ${stat('Получено факт', fmt(divTotal()))}
+  </div>
+  <div class="card section">
+    <h3 style="margin:0 0 8px">Утверждённые, ещё не полученные</h3>
+    <p class="subtle" style="margin:0 0 10px">
+      Здесь только <b>утверждённые</b> дивиденды и купоны с датой выплаты <b>сегодня или позже</b>. Уже полученные — во вкладке «Дивиденды».
+      Суммы месяца/квартала/года — по <b>дате выплаты</b> в этом периоде.
+      Доходность = сумма за ближайшие 12 месяцев ÷ вложения (или капитал).
+    </p>
+    <div class="statusline"><span>Этот месяц</span><b class="good">${fmt(month)} · ${pf(cfMonth)} капитала</b></div>
+    <div class="statusline"><span>Квартал</span><b class="good">${fmt(quarter)}</b></div>
+    <div class="statusline"><span>Год (календарь)</span><b class="good">${fmt(year)}</b></div>
+    <div class="statusline"><span>12 месяцев вперёд</span><b class="good">${fmt(next12)} · ${pf(yldCost)} к вложениям</b></div>
+  </div>
+  <div class="card section">
+    <div class="top">
+      <div>
+        <h3 style="margin:0">Утверждённые дивиденды и купоны</h3>
+        <span class="muted">Бумага из портфеля · дата выплаты · сумма</span>
+      </div>
+      <button type="button" class="btn primary" data-act="addPlan" ${tickers.length ? '' : 'disabled'}>＋ Утверждённая выплата</button>
+    </div>
+    <div class="tablewrap" style="margin-top:10px"><table class="table">
+      <thead><tr>
+        <th>Дата выплаты</th><th>Актив</th><th>Тип</th><th>Сумма</th><th>Комментарий</th><th></th>
+      </tr></thead>
+      <tbody>${rows.length ? rows.map(p => `
+        <tr>
+          <td>${htmlEscape(p.payDate || p.nextDate || '—')}</td>
+          <td><b>${htmlEscape(p.ticker)}</b></td>
+          <td>${htmlEscape(p.type)}</td>
+          <td class="good">${fmt(p.amount)}</td>
+          <td>${htmlEscape(p.note || '')}</td>
+          <td style="white-space:nowrap">
+            <button type="button" class="btn primary" data-plan-recv="${htmlEscape(p.id)}" title="Отметить полученным">✓</button>
+            <button type="button" class="btn" data-plan-edit="${htmlEscape(p.id)}">✏️</button>
+            <button type="button" class="btn danger" data-plan-del="${htmlEscape(p.id)}">🗑</button>
+          </td>
+        </tr>`).join('') : `<tr><td colspan="6" class="empty">Нет будущих утверждённых выплат — добавьте дивиденд/купон с датой ≥ сегодня</td></tr>`}
+      </tbody>
+    </table></div>
+  </div>`;
+}
+
+function planModal(edit) {
+  const tickers = portfolioTickers();
+  if (!tickers.length) {
+    alert('В портфеле нет позиций');
+    return;
+  }
+  const m = document.createElement('div');
+  m.className = 'modal';
+  const isEdit = !!edit;
+  m.innerHTML = `<div class="modalbox">
+    <button class="close" data-x>×</button>
+    <h3>${isEdit ? 'Изменить выплату' : 'Утверждённая выплата'}</h3>
+    <div class="form">
+      <div class="field"><label>Актив из портфеля</label>
+        <select class="select" data-f="pt">${assetSelectOptions(edit?.ticker)}</select>
+      </div>
+      <div class="row">
+        <div class="field"><label>Тип</label>
+          <select class="select" data-f="py">
+            <option ${!edit || edit.type === 'Дивиденд' ? 'selected' : ''}>Дивиденд</option>
+            <option ${edit?.type === 'Купон' ? 'selected' : ''}>Купон</option>
+          </select>
+        </div>
+        <div class="field"><label>Дата выплаты</label>
+          <input class="input" data-f="pd" type="date" value="${htmlEscape(edit?.payDate || edit?.nextDate || new Date().toISOString().slice(0,10))}">
+        </div>
+      </div>
+      <div class="field"><label>Сумма к получению, ₽</label>
+        <input class="input" data-f="pa" type="text" inputmode="decimal" value="${edit ? (edit.amount ?? '') : ''}" placeholder="на всю позицию">
+      </div>
+      <div class="field"><label>Комментарий</label>
+        <input class="input" data-f="pn" value="${htmlEscape(edit?.note || '')}" placeholder="решение совета директоров / дата отсечки">
+      </div>
+    </div>
+    <div class="modalfoot">
+      <button type="button" class="btn" data-x>Отмена</button>
+      <button type="button" class="btn primary" data-save>Сохранить</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+  const q = sel => m.querySelector(`[data-f="${sel}"]`);
+  const close = () => m.remove();
+  m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+  m.querySelector('[data-save]').addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    try {
+      if (!Array.isArray(db.planned)) db.planned = [];
+      const ticker = (q('pt') && q('pt').value || '').trim().toUpperCase();
+      const amount = parseNum(q('pa') && q('pa').value);
+      const payDate = (q('pd') && q('pd').value) || '';
+      if (!ticker) { alert('Выберите актив'); return; }
+      if (!amount || amount <= 0) { alert('Укажите сумму'); return; }
+      if (!payDate) { alert('Укажите дату выплаты'); return; }
+      const o = {
+        id: edit?.id || uid('p'),
+        ticker,
+        type: (q('py') && q('py').value) || 'Дивиденд',
+        amount,
+        payDate,
+        nextDate: payDate,
+        status: 'approved',
+        note: ((q('pn') && q('pn').value) || '').trim()
+      };
+      if (isEdit) Object.assign(edit, o);
+      else db.planned.push(o);
+      save();
+      close();
+      tab = 'plan';
+      render();
+      setNotice('Утверждённая выплата сохранена · 12 мес.: ' + fmt(planSum('next12')));
+    } catch (err) {
+      alert('Ошибка: ' + (err.message || err));
+    }
+  });
+}
+
+/* ========== FUND ========== */
+function fund() {
+  el('main').innerHTML = `
+  <div class="top">
+    <div>
+      <h3 style="margin:0">Фундаментальный мониторинг</h3>
+      <span class="muted">Отдельно от цены · контроль раз в 1–2 месяца</span>
+    </div>
+    <span class="pill">hard-gate → качество → риск → оценка</span>
+  </div>
+  <div class="tablewrap"><table class="table">
+    <thead><tr><th>Тикер</th><th>Статус</th><th>Тренд</th><th>🟡</th><th>🟠</th><th>🔴</th><th>Комментарий</th></tr></thead>
+    <tbody>${(db.fund || []).map(f => `
+      <tr>
+        <td><b>${htmlEscape(f.ticker)}</b></td>
+        <td>${htmlEscape(f.status)}</td>
+        <td>${htmlEscape(f.trend)}</td>
+        <td>${f.yellow ?? 0}</td>
+        <td>${f.orange ?? 0}</td>
+        <td>${f.red ?? 0}</td>
+        <td>${htmlEscape(f.note || '')}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>
+  <div class="card section">
+    <b>Правило эскалации</b>
+    <p class="muted" style="margin:8px 0 0">
+      0–1 жёлтый → держать · 2 жёлтых → держать без увеличения ·
+      1 оранжевый или 3 жёлтых → не покупать ·
+      2 оранжевых либо красный + независимый негатив → сокращение ·
+      чёрный / thesis break → выход.
+    </p>
+  </div>`;
+}
+
+/* ========== RESERVE ========== */
+function reserve() {
+  const r = db.assets.filter(a => a.contour === 'Резерв' && !a.archived);
+  const rv = contour('Резерв');
+  const bond = r.filter(a => ['ОФЗ', 'Корп. облигация'].includes(a.type)).reduce((s, a) => s + assetValue(a), 0);
+  const liq = rv - bond;
+  const lqdt = assetValue(db.assets.find(a => a.ticker === 'LQDT') || {});
+
+  el('main').innerHTML = `
+  <div class="grid">
+    ${stat('Резерв', fmt(rv))}
+    ${stat('Ликвидность', fmt(liq))}
+    ${stat('ОФЗ + корп.', fmt(bond))}
+    ${stat('Цель LQDT', fmt(db.settings.lqdtTarget))}
+  </div>
+  <div class="card section">
+    <div class="top">
+      <div>
+        <h3 style="margin:0">Резервный контур</h3>
+        <span class="muted">LQDT → ${fmt(db.settings.lqdtTarget)} · затем преимущественно ОФЗ</span>
+      </div>
+    </div>
+    <div class="progress" style="margin:12px 0 6px">
+      <i style="width:${Math.min(100, lqdt / (db.settings.lqdtTarget || 1) * 100)}%"></i>
+    </div>
+    <div class="subtle" style="margin-bottom:12px">
+      LQDT ${fmt(lqdt)} из ${fmt(db.settings.lqdtTarget)}
+      ${lqdt >= db.settings.lqdtTarget ? '· цель достигнута' : `· осталось ${fmt(db.settings.lqdtTarget - lqdt)}`}
+    </div>
+    <div class="tablewrap"><table class="table">
+      <thead><tr><th>Актив</th><th>Кол-во</th><th>Средняя</th><th>Цена</th><th>Стоимость</th><th>Доля</th></tr></thead>
+      <tbody>${r.map(a => {
+        const v = assetValue(a);
+        return `<tr>
+          <td><b>${htmlEscape(a.ticker)}</b><br><span class="muted">${htmlEscape(a.name)}</span></td>
+          <td>${nfmt(a.qty, 4)}</td>
+          <td>${nfmt(a.avg, 2)}</td>
+          <td>${nfmt(a.price, 4)}</td>
+          <td>${fmt(v)}</td>
+          <td>${rv ? pf(v / rv * 100) : '—'}</td>
+        </tr>`;
+      }).join('')}
+      ${r.length ? `<tr><td colspan="4"><b>Итого</b></td><td><b>${fmt(rv)}</b></td><td></td></tr>` : ''}
+      </tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ========== ANALYTICS ========== */
+function analytics() {
+  const t = total();
+  const inv = invested();
+  const peak = Math.max(...(db.history || []).map(x => x.value), t);
+  const dd = peak ? ((t / peak - 1) * 100) : 0;
+  const g = growthFromFirst();
+  const eq = contour('ИИС');
+  const res = contour('Резерв');
+  const liq = assetValue(db.assets.find(a => a.ticker === 'LQDT') || {});
+  const bond = res - liq;
+  const top = db.assets.filter(a => assetValue(a) > 0).sort((a, b) => assetValue(b) - assetValue(a)).slice(0, 6);
+  const sumTop = top.reduce((s, a) => s + assetValue(a), 0);
+  const months = new Set((db.ops || []).filter(o => o.type === 'Пополнение').map(o => String(o.date).slice(0, 7))).size;
+  const contrib = netDeposits();
+  const p = pnl();
+  const pp = pnlPct();
+
+  el('main').innerHTML = `
+  <div class="top">
+    <div>
+      <h3 style="margin:0">Аналитика портфеля</h3>
+      <span class="muted">Ключевые показатели без прогнозирования цены</span>
+    </div>
+    <span class="pill">snapshot-based</span>
+  </div>
+  <div class="analyticsGrid">
+    ${stat('Доходность к вложениям', `${signed(pp, pf)}`, p < 0 ? 'bad' : 'good')}
+    ${stat('Просадка от пика', pf(dd), dd < 0 ? 'bad' : 'good')}
+    ${stat('Рост от первой точки', `${signed(g.abs, fmt)} · ${signed(g.pct, pf)}`, g.abs < 0 ? 'bad' : 'good')}
+    ${stat('Доля ИИС', pf(t ? eq / t * 100 : 0))}
+    ${stat('Доля резерва', pf(t ? res / t * 100 : 0))}
+    ${stat('Дивиденды к вложениям', pf(inv ? divTotal() / inv * 100 : 0), 'good')}
+  </div>
+  <div class="notice" style="margin-top:12px">
+    Рост от первой точки = текущий капитал − капитал на ${g.first ? fmt(g.first).replace(' ₽','') + ' ₽ (' + ((db.history||[])[0]?.date || '—') + ')' : 'первой точке'}.
+    При пополнении капитал растёт → растёт и эта сумма. Точки графика — только после «＋ Точка».
+  </div>
+  <div class="two section">
+    <div class="card">
+      <h3 style="margin:0">Концентрация</h3>
+      <p class="subtle">Топ-${top.length} занимают ${pf(t ? sumTop / t * 100 : 0)} капитала</p>
+      ${top.map(a => {
+        const pct = t ? assetValue(a) / t * 100 : 0;
+        return `<div class="rankrow"><b>${htmlEscape(a.ticker)}</b><div class="rankbar"><i style="width:${Math.min(100, pct)}%"></i></div><span>${pf(pct)}</span></div>`;
+      }).join('')}
+    </div>
+    <div class="card">
+      <h3 style="margin:0">Резервный контур</h3>
+      <div class="miniGrid" style="margin-top:12px">
+        ${stat('Всего', fmt(res))}
+        ${stat('LQDT', fmt(liq))}
+        ${stat('Облигации', fmt(bond))}
+        ${stat('Пополнений', fmt(contrib))}
+      </div>
+      <div class="notice" style="margin-top:12px">
+        ${db.settings.lqdtTarget && liq < db.settings.lqdtTarget
+          ? `LQDT ниже цели на ${fmt(db.settings.lqdtTarget - liq)}.`
+          : 'Ликвидная подушка на целевом уровне или выше.'}
+      </div>
+    </div>
+  </div>
+  <div class="two section">
+    <div class="card">
+      <h3 style="margin:0">Динамика вложений</h3>
+      <div class="miniGrid" style="margin-top:12px">
+        ${stat('Всего вложено', fmt(inv))}
+        ${stat('Пополнений в журнале', fmt(contrib))}
+        ${stat('Периодов', months || '—')}
+        ${stat('Среднее за период', months ? fmt(contrib / months) : '—')}
+      </div>
+      <p class="subtle" style="margin-top:12px">Если журнал неполный — аналитика только по введённым операциям.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin:0">Диагностика</h3>
+      <div class="statusline" style="margin:10px 0"><span>Онлайн-котировки</span><b>${db.assets.filter(a => a.online && !a.archived).length}</b></div>
+      <div class="statusline" style="margin:10px 0"><span>Фундаментал 🟢</span><b>${(db.fund || []).filter(x => x.status === '🟢').length}/${(db.fund || []).length}</b></div>
+      <div class="statusline" style="margin:10px 0"><span>Точек истории</span><b>${(db.history || []).length}</b></div>
+      <div class="statusline" style="margin:10px 0"><span>Крупнейшая</span><b>${top[0]?.ticker || '—'} ${top[0] ? pf(assetValue(top[0]) / t * 100) : ''}</b></div>
+      <div class="statusline" style="margin:10px 0"><span>Брокерский P&amp;L</span><b class="${p < 0 ? 'bad' : 'good'}">${signed(p, fmt)}</b></div>
+    </div>
+  </div>`;
+}
+
+/* ========== SYSTEM ========== */
+function system() {
+  const s = db.settings || {};
+  const tIis = contour('ИИС');
+
+  el('main').innerHTML = `
+  <div class="grid">
+    ${stat('Базовый взнос', fmt(s.monthly))}
+    ${stat('ИИС', fmt(s.iis))}
+    ${stat('Резерв', fmt(s.reserve))}
+    ${stat('Цель', '50 млн ₽ real')}
+  </div>
+  <div class="two section">
+    <div class="card">
+      <h3 style="margin:0 0 8px">Настройки</h3>
+      <div class="form" style="max-width:420px">
+        <div class="field"><label>Ежемесячное пополнение</label><input class="input" id="sm" type="number" value="${s.monthly || 0}"></div>
+        <div class="field"><label>из них на ИИС</label><input class="input" id="si" type="number" value="${s.iis || 0}"></div>
+        <div class="field"><label>из них в резерв</label><input class="input" id="sr" type="number" value="${s.reserve || 0}"></div>
+        <div class="field"><label>Цель LQDT</label><input class="input" id="sl" type="number" value="${s.lqdtTarget || 0}"></div>
+        <div class="field"><label>Брокерский результат (₽)</label><input class="input" id="sbr" type="number" step="any" value="${s.brokerResult ?? ''}"></div>
+        <div class="field"><label>Брокерский результат (%)</label><input class="input" id="sbrp" type="number" step="any" value="${s.brokerResultPct ?? ''}"></div>
+        <div class="field"><label>Корректировка капитала (кэш и т.п.)</label><input class="input" id="sadj" type="number" step="any" value="${s.brokerAdjustment || 0}"></div>
+        <button class="btn primary" id="saveSet">Сохранить</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px">Следующий взнос ИИС</h3>
+      <div class="muted">В норме — ${fmt(s.iis)}. При кризисном модуле сумма растёт.</div>
+      <div class="allocation" style="margin-top:12px">
+        ${db.assets.filter(a => a.contour === 'ИИС' && a.target > 0).map(a => {
+          const v = assetValue(a);
+          const pct = tIis ? v / tIis * 100 : 0;
+          return `<div class="allocrow">
+            <b>${htmlEscape(a.ticker)}</b>
+            <div class="bar"><i style="width:${Math.min(100, Math.max(0, pct / a.target * 100))}%"></i>
+              <span class="tgt" style="left:100%"></span>
+            </div>
+            <span>${pf(pct)}</span>
+            <span class="muted">${pf(a.target)}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="notice" style="margin-top:12px">
+        Сначала hard-gate · затем недовес к цели. SBER/LKOH не докупать только из‑за недовеса.
+      </div>
+      <h3 style="margin:18px 0 6px">Кризисный модуль</h3>
+      <p class="muted" style="margin:0">&lt;10%: 18/6 · 10–20%: 20/4 · 20–30%: 22/2 · &gt;30%: 23–24 / 0–1</p>
+      <h3 style="margin:18px 0 6px">Переход</h3>
+      <p class="muted" style="margin:0">Ориентир 22–28 млн ₽ или возраст 55+. Постепенно повышать долю cash-flow.</p>
+    </div>
+  </div>
+  <div class="card section">
+    <p class="muted" style="margin:0 0 10px">Версия 4.5 · ключ ${KEY} · данные только в браузере</p>
+    <div class="actions">
+      <button class="btn danger" id="resetBtn">Сбросить к демо (снимок 06.10)</button>
+    </div>
+  </div>`;
+
+  el('saveSet').onclick = () => {
+    db.settings.monthly = +el('sm').value || 0;
+    db.settings.iis = +el('si').value || 0;
+    db.settings.reserve = +el('sr').value || 0;
+    db.settings.lqdtTarget = +el('sl').value || 0;
+    const br = el('sbr').value;
+    const brp = el('sbrp').value;
+    db.settings.brokerResult = br === '' ? undefined : +br;
+    db.settings.brokerResultPct = brp === '' ? undefined : +brp;
+    db.settings.brokerAdjustment = +el('sadj').value || 0;
+    save();
+    setNotice('Настройки сохранены');
+    render();
+  };
+  el('resetBtn').onclick = () => {
+    if (!confirm('Сбросить все данные к демо-снимку 06.10.2026?')) return;
+    db = clone(seed);
+    save();
+    render();
+    setNotice('Сброшено к демо-данным');
+  };
+}
+
+/* ========== MOEX QUOTES ========== */
+function isBond(a) {
+  return a.type === 'ОФЗ' || a.type === 'Корп. облигация';
+}
+function resolveSecid(a) {
+  return a.secid || OFZ_MAP[a.ticker] || a.ticker;
+}
+
+async function fetchJson(url) {
+  const r = await fetch(url, { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+async function quote(a) {
+  const secid = resolveSecid(a);
+  const candidates = isBond(a)
+    ? [
+        { market: 'bonds', board: 'TQOB' },
+        { market: 'bonds', board: 'TQCB' }
+      ]
+    : [
+        { market: 'shares', board: 'TQBR' },
+        { market: 'shares', board: 'TQTF' },
+        { market: 'shares', board: 'TQIF' }
+      ];
+
+  for (const { market, board } of candidates) {
+    try {
+      const url = `https://iss.moex.com/iss/engines/stock/markets/${market}/boards/${board}/securities/${encodeURIComponent(secid)}.json?iss.meta=off&iss.only=marketdata&marketdata.columns=SECID,LAST,PREVPRICE,CLOSEPRICE,LCURRENTPRICE,CHANGE`;
+      const j = await fetchJson(url);
+      const md = j.marketdata;
+      if (!md?.data?.length) continue;
+      const idx = Object.fromEntries(md.columns.map((c, i) => [c, i]));
+      const row = md.data.find(x => x[idx.SECID] === secid) || md.data[0];
+      let last = Number(row[idx.LAST]);
+      if (!Number.isFinite(last) || last <= 0) {
+        last = Number(row[idx.LCURRENTPRICE] ?? row[idx.CLOSEPRICE]);
+      }
+      if (!Number.isFinite(last) || last <= 0) continue;
+
+      const change = Number(row[idx.CHANGE]);
+      const prevRaw = Number(row[idx.PREVPRICE]);
+      const nom = a.nominal || 1000;
+
+      let newPrice, prevClose;
+      if (isBond(a)) {
+        // MOEX: LAST/PREVPRICE в % от номинала (обычно 50–150).
+        // Если значение уже > 200 — считаем, что это рубли за штуку.
+        const toRub = (x) => (x > 0 && x < 200) ? (x / 100 * nom) : x;
+        newPrice = toRub(last);
+        prevClose = Number.isFinite(prevRaw) && prevRaw > 0 ? toRub(prevRaw) : null;
+        a.marketChange = Number.isFinite(change) ? change : 0; // п.п.
+        // дневной P&L в ₽: Δ% × номинал × qty
+        if (Number.isFinite(change)) {
+          a.dayPnl = change / 100 * nom * (a.qty || 0);
+        } else if (prevClose != null) {
+          a.dayPnl = (newPrice - prevClose) * (a.qty || 0);
+        }
+      } else {
+        newPrice = last;
+        prevClose = Number.isFinite(prevRaw) && prevRaw > 0 ? prevRaw : null;
+        a.marketChange = Number.isFinite(change) ? change : 0; // ₽
+        if (Number.isFinite(change)) {
+          a.dayPnl = change * (a.qty || 0);
+        } else if (prevClose != null) {
+          a.dayPnl = (newPrice - prevClose) * (a.qty || 0);
+        }
+      }
+
+      if (prevClose != null) {
+        a.prevClose = prevClose;
+        a.prevPrice = prevClose;
+      } else if (a.price > 0 && Math.abs(a.price - newPrice) > 1e-9) {
+        if (!a.prevClose) a.prevClose = a.price;
+        if (!a.prevPrice) a.prevPrice = a.price;
+      }
+      a.price = newPrice;
+      return true;
+    } catch (e) {}
+  }
+  return false;
+}
+
+async function refresh(silent) {
+  if (refreshing) return { ok: 0, total: 0 };
+  refreshing = true;
+  try {
+    if (!silent) {
+      const nt = el('noticeText');
+      if (nt) nt.innerHTML = '<span class="spinner"></span>Обновляю котировки MOEX…';
+    }
+    ensureDayBase();
+    const list = db.assets.filter(a => a.online !== false && !a.archived);
+    const results = await Promise.all(
+      list.map(a => quote(a).then(ok => ok).catch(() => false))
+    );
+    const ok = results.filter(Boolean).length;
+    db.lastUpdate = new Date().toISOString();
+    // авто-точка графика на сегодня
+    autoSnapshot();
+    save();
+    const d = dayChange();
+    if (!silent) {
+      setNotice('Обновлено ' + ok + ' из ' + list.length + '. День: ' + signed(d, fmt) + ' · ' + signed(dayChangePct(), pf));
+    }
+    render();
+    return { ok, total: list.length };
+  } finally {
+    refreshing = false;
+  }
+}
+
+function autoSnapshot() {
+  if (!Array.isArray(db.history)) db.history = [];
+  if (!db.history.length) {
+    db.history.push({ date: '2026-04-01', value: 240000, invested: 240000, deposits: 240000, dividends: 0 });
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  const point = {
+    date: today,
+    value: total(),
+    invested: invested(),
+    deposits: cumulativeDepositsUntil(today),
+    dividends: cumulativeDivsUntil(today)
+  };
+  const last = db.history[db.history.length - 1];
+  if (last && last.date === today) {
+    Object.assign(last, point);
+  } else {
+    db.history.push(point);
+  }
+}
+
+/** Накопленные чистые пополнения до даты включительно */
+function cumulativeDepositsUntil(date) {
+  let sum = 0;
+  // стартовый капитал из первой точки истории
+  const first = (db.history || [])[0];
+  if (first && first.date <= date) {
+    sum = Number(first.deposits != null ? first.deposits : first.invested) || 0;
+  }
+  (db.ops || []).forEach(o => {
+    if (!o.date || o.date > date) return;
+    if (o.type === 'Пополнение') sum += Number(o.amount) || 0;
+    if (o.type === 'Вывод') sum -= Number(o.amount) || 0;
+  });
+  return sum;
+}
+
+/** Накопленные полученные дивиденды до даты */
+function cumulativeDivsUntil(date) {
+  return (db.dividends || []).reduce((s, d) => {
+    if (!d.date || d.date > date) return s;
+    return s + (Number(d.amount) || 0);
+  }, 0);
+}
+
+
+
+function snapshot() {
+  if (!db.settings) db.settings = {};
+  if (!Array.isArray(db.history)) db.history = [];
+  // если истории пуста — первая точка 240к уже должна быть; иначе добавляем текущую
+  if (!db.history.length) {
+    db.history.push({ date: '2026-04-01', value: 240000, invested: 240000 });
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  const last = db.history[db.history.length - 1];
+  if (last && last.date === today) {
+    last.value = total();
+    last.invested = invested();
+  } else {
+    db.history.push({ date: today, value: total(), invested: invested() });
+  }
+  save();
+  render();
+  setNotice('Точка графика сохранена (' + today + ') · капитал ' + fmt(total()));
+}
+
+/* ========== EVENTS: одно делегирование на весь документ ========== */
+function doDayBase() {
+  if (!db.settings) db.settings = {};
+  db.settings.dayBaseValue = total();
+  db.settings.dayBaseDate = new Date().toISOString().slice(0, 10);
+  save();
+  try { render(); } catch (e) { console.error(e); }
+  setNotice('База дня установлена: ' + fmt(db.settings.dayBaseValue) + ' (' + db.settings.dayBaseDate + ')');
+}
+
+function doExport() {
+  try {
+    persistState();
+    const json = JSON.stringify(db, null, 2);
+    const name = 'invest-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    // способ 1: <a download>
+    const u = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = u;
+    a.download = name;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { try { a.remove(); URL.revokeObjectURL(u); } catch (e) {} }, 2000);
+    setNotice('Бэкап: ' + name + ' · ' + Math.round(json.length / 1024) + ' КБ');
+  } catch (err) {
+    console.error(err);
+    // fallback: окно с JSON для копирования
+    try {
+      const json = JSON.stringify(db, null, 2);
+      const w = window.open('', '_blank', 'width=640,height=480');
+      if (w) {
+        w.document.write('<pre style="white-space:pre-wrap;font:12px monospace"></pre>');
+        w.document.querySelector('pre').textContent = json;
+        w.document.title = 'Бэкап JSON — сохраните как .json';
+      } else {
+        prompt('Скопируйте бэкап (Ctrl+C):', json.slice(0, 2000));
+      }
+      setNotice('Бэкап открыт в окне — сохраните файл вручную');
+    } catch (e2) {
+      alert('Ошибка бэкапа: ' + (err.message || err));
+    }
+  }
+}
+
+function applyImportedDb(x, label) {
+  if (!x || typeof x !== 'object') throw new Error('Не JSON-объект');
+  if (!Array.isArray(x.assets)) throw new Error('В файле нет assets[]');
+  migrate(x);
+  db = x;
+  if (!db.settings) db.settings = {};
+  if (typeof db.settings.baseAdjustment !== 'number') {
+    db.settings.baseAdjustment = Number(db.settings.brokerAdjustment) || 3.71;
+  }
+  try { recomputeCash(); } catch (e) {}
+  try { autoSnapshot(); } catch (e) {}
+  save();
+  render();
+  setNotice('Загружено: ' + (label || 'бэкап') + ' · активов: ' + db.assets.length);
+}
+
+function doImportFile(file) {
+  if (!file) return;
+  const r = new FileReader();
+  r.onerror = () => alert('Не удалось прочитать файл');
+  r.onload = () => {
+    try {
+      const x = JSON.parse(String(r.result || ''));
+      applyImportedDb(x, file.name);
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка загрузки: ' + (err.message || err));
+    }
+  };
+  r.readAsText(file, 'utf-8');
+}
+
+function doImportPick() {
+  let fi = document.getElementById('fileInput');
+  if (!fi) {
+    fi = document.createElement('input');
+    fi.type = 'file';
+    fi.accept = 'application/json,.json,text/json,text/plain';
+    fi.id = 'fileInput';
+    fi.hidden = true;
+    document.body.appendChild(fi);
+    fi.addEventListener('change', function (e) {
+      const f = e.target.files && e.target.files[0];
+      if (f) doImportFile(f);
+      e.target.value = '';
+    });
+  }
+  fi.value = '';
+  fi.click();
+}
+
+
+document.addEventListener('click', function (e) {
+  const actBtn = e.target.closest('[data-act]');
+  if (actBtn) {
+    e.preventDefault();
+    const act = actBtn.getAttribute('data-act');
+    try {
+      if (act === 'refresh') refresh();
+      else if (act === 'snapshot') snapshot();
+      else if (act === 'daybase') doDayBase();
+      else if (act === 'addOp') opModal();
+      else if (act === 'addDiv') divModal();
+      else if (act === 'addPlan') planModal();
+      else if (act === 'addAsset') assetModal();
+      else if (act === 'goAnalytics') { tab = 'analytics'; render(); }
+    } catch (err) {
+      console.error(err);
+      setNotice('Ошибка: ' + (err.message || err));
+      alert('Ошибка: ' + (err.message || err));
+    }
+    return;
+  }
+
+  const tabBtn = e.target.closest('.tab, #bottomNav [data-tab]');
+  if (tabBtn && tabBtn.dataset.tab) {
+    e.preventDefault();
+    const t = tabBtn.dataset.tab;
+    if (t === 'more') { showMoreMenu(); return; }
+    tab = t;
+    try { render(); } catch (err) {
+      console.error(err);
+      setNotice('Ошибка вкладки: ' + (err.message || err));
+    }
+    return;
+  }
+
+  const editBtn = e.target.closest('[data-edit]');
+  if (editBtn) {
+    e.preventDefault();
+    const a = db.assets.find(x => x.id === editBtn.getAttribute('data-edit'));
+    if (a) assetModal(a);
+    return;
+  }
+
+  const delAsset = e.target.closest('[data-delete]');
+  if (delAsset) {
+    e.preventDefault();
+    deleteAsset(delAsset.getAttribute('data-delete'));
+    return;
+  }
+
+  const delOp = e.target.closest('[data-op-del]');
+  if (delOp) {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      if (!window.confirm('Удалить операцию из журнала?')) return;
+      const id = delOp.getAttribute('data-op-del');
+      const idx = parseInt(delOp.getAttribute('data-op-i'), 10);
+      const before = total();
+      const ok = removeOpById(id, idx);
+      if (!ok) {
+        window.alert('Операция не найдена');
+        return;
+      }
+      tab = 'ops';
+      render();
+      setNotice('Удалено · ' + fmt(before) + ' → ' + fmt(total()));
+    } catch (err) {
+      console.error(err);
+      window.alert('Ошибка удаления: ' + (err.message || err));
+    }
+    return;
+  }
+
+  const divEdit = e.target.closest('[data-div-edit]');
+  if (divEdit) {
+    e.preventDefault();
+    try {
+      const id = divEdit.getAttribute('data-div-edit');
+      const item = (db.dividends || []).find(d => String(d.id) === String(id));
+      if (item) divModal(item);
+    } catch (err) { console.error(err); }
+    return;
+  }
+
+  const divDel = e.target.closest('[data-div-del]');
+  if (divDel) {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      if (!window.confirm('Удалить выплату?')) return;
+      const id = divDel.getAttribute('data-div-del');
+      const before = divTotal();
+      const n = (db.dividends || []).length;
+      db.dividends = (db.dividends || []).filter(d => String(d.id) !== String(id));
+      if (db.dividends.length === n) {
+        // fallback by index
+        const di = parseInt(divDel.getAttribute('data-div-i'), 10);
+        if (!isNaN(di) && di >= 0) {
+          const sorted = [...(db.dividends || [])].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+          const item = sorted[di];
+          if (item) db.dividends = db.dividends.filter(d => d !== item);
+        }
+      }
+      persistState();
+      tab = 'divs';
+      render();
+      setNotice('Удалено · выплат: ' + fmt(before) + ' → ' + fmt(divTotal()));
+    } catch (err) {
+      console.error(err);
+      window.alert('Ошибка удаления: ' + (err.message || err));
+    }
+    return;
+  }
+
+  const planEdit = e.target.closest('[data-plan-edit]');
+  if (planEdit) {
+    e.preventDefault();
+    const id = planEdit.getAttribute('data-plan-edit');
+    const item = (db.planned || []).find(d => d.id === id);
+    if (item) planModal(item);
+    return;
+  }
+
+  const planRecv = e.target.closest('[data-plan-recv]');
+  if (planRecv) {
+    e.preventDefault();
+    const id = planRecv.getAttribute('data-plan-recv');
+    const item = (db.planned || []).find(d => d.id === id);
+    if (!item) return;
+    if (!confirm('Отметить как полученное? Сумма попадёт в «Дивиденды» и в капитал.')) return;
+    if (!db.settings) db.settings = {};
+    if (!Array.isArray(db.dividends)) db.dividends = [];
+    const amount = Number(item.amount) || 0;
+    db.dividends.push({
+      id: uid('d'),
+      date: item.payDate || item.nextDate || todayISO(),
+      asset: item.ticker,
+      type: item.type || 'Дивиденд',
+      amount,
+      note: (item.note || '') + ' (из плана)',
+      cashApplied: true
+    });
+    db.planned = db.planned.filter(d => d.id !== id);
+    persistState();
+    tab = 'divs';
+    render();
+    setNotice('Получено ' + fmt(amount) + ' · в дивидендах: ' + fmt(divTotal()) + ' · капитал: ' + fmt(total()));
+    return;
+  }
+
+  const planDel = e.target.closest('[data-plan-del]');
+  if (planDel) {
+    e.preventDefault();
+    if (!confirm('Удалить из плана?')) return;
+    const id = planDel.getAttribute('data-plan-del');
+    db.planned = (db.planned || []).filter(d => d.id !== id);
+    save();
+    tab = 'plan';
+    render();
+    setNotice('Удалено из плана');
+    return;
+  }
+});
+
+(function bindBackupButtons() {
+  const fi = document.getElementById('fileInput');
+  if (fi) {
+    fi.addEventListener('change', function (e) {
+      const f = e.target.files && e.target.files[0];
+      if (f) doImportFile(f);
+      e.target.value = '';
+    });
+  }
+  document.querySelectorAll('[data-act="export"]').forEach(b => {
+    b.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      doExport();
+    });
+  });
+  document.querySelectorAll('[data-act="import"]').forEach(b => {
+    b.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      doImportPick();
+    });
+  });
+})();
+
+setInterval(() => {
+  if (document.visibilityState === 'visible') {
+    try { save(); } catch (e) {}
+  }
+}, 8000);
+
+try {
+  render();
+  const modeMsg = storageMode === 'local'
+    ? 'Данные сохраняются в браузере.'
+    : 'Внимание: localStorage недоступен (превью) — данные только в памяти, скачайте бэкап.';
+  setNotice(modeMsg + ' Загружаю котировки…');
+  // авто: котировки + день + точка графика
+  refresh(true).then(r => {
+    const d = dayChange();
+    setNotice(
+      modeMsg +
+      ' Обновлено ' + (r && r.ok != null ? r.ok : 0) +
+      ' котировок. День: ' + signed(d, fmt) + ' · ' + signed(dayChangePct(), pf) +
+      '. Точка графика на сегодня записана.'
+    );
+    render();
+  }).catch(err => {
+    console.error(err);
+    autoSnapshot();
+    save();
+    setNotice(modeMsg + ' Котировки недоступны (офлайн/CORS). Демо-данные. ' + (err.message || ''));
+    render();
+  });
+} catch (err) {
+  console.error(err);
+  const n = document.getElementById('noticeText');
+  if (n) n.textContent = 'Ошибка старта: ' + (err.message || err);
+}
+
+/* PWA install */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const bar = document.getElementById('installBar');
+  if (bar && !window.matchMedia('(display-mode: standalone)').matches) {
+    bar.classList.add('show');
+  }
+});
+document.getElementById('installBtn')?.addEventListener('click', async () => {
+  if (!deferredPrompt) {
+    alert('В Chrome: меню ⋮ → «Установить приложение».\nВ Safari iPhone: Поделиться → На экран «Домой».');
+    return;
+  }
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBar')?.classList.remove('show');
+});
+document.getElementById('installClose')?.addEventListener('click', () => {
+  document.getElementById('installBar')?.classList.remove('show');
+});
+
+// deep link hash
+if (location.hash) {
+  const h = location.hash.slice(1);
+  if (['dashboard','assets','ops','divs','plan','fund','reserve','analytics','system'].includes(h)) {
+    tab = h;
+  }
+}
+
+</script>
+</body>
+</html>
+
